@@ -268,7 +268,15 @@ void Graphics::Visualizer::modifyCoordinates()
 
 void Graphics::Visualizer::finishCustomization()
 {
-    mAddButton->setDisabled(true);
-    mModifyButton->setDisabled(true);
+    mAddButton->setVisible(false);
+    mModifyButton->setVisible(false);
+    mPointsList->setVisible(false);
+    mXCoordinate->setVisible(false);
+    mYCoordinate->setVisible(false);
+    mZCoordinate->setVisible(false);
+    mCustomLabelX->setVisible(false);
+    mCustomLabelY->setVisible(false);
+    mCustomLabelZ->setVisible(false);
+    mCustomLabelPoints->setVisible(false);
 }
 
