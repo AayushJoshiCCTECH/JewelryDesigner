@@ -149,11 +149,12 @@ void OpenGLWindow::renderHeart()
     Geometry::Heart3D heart;
     heart.draw();
 
-    glEnableVertexAttribArray(0);
+    
     glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, heart.heartCoordinates().data());
-
-    glEnableVertexAttribArray(1);
     glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, heart.heartColors().data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
 
     glDrawArrays(GL_LINE_LOOP, 0, heart.heartCoordinates().size() / 3);
 
@@ -162,32 +163,32 @@ void OpenGLWindow::renderHeart()
    
     /* FOR POINTS COLOR */
     
-    //QVector<double> heartPoints;  
-    //QVector<double> heartPointsColors;
+    QVector<double> heartPoints;  
+    QVector<double> heartPointsColors;
 
-    // for (const auto& point : heart.heartPoints())
-    //{
-    //    heartPoints.push_back(point.x());
-    //    heartPoints.push_back(point.y());
-    //    heartPoints.push_back(point.z());
+     for (const auto& point : heart.heartPoints())
+    {
+        heartPoints.push_back(point.x());
+        heartPoints.push_back(point.y());
+        heartPoints.push_back(point.z());
 
-    //    heartPointsColors.push_back(1.0); // Red
-    //    heartPointsColors.push_back(0.0); // Green
-    //    heartPointsColors.push_back(0.0); // Blue
-    //}
+        heartPointsColors.push_back(1.0); // Red
+        heartPointsColors.push_back(0.0); // Green
+        heartPointsColors.push_back(0.0); // Blue
+    }
 
-    //glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, heartPoints.data());
-    //glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, heartPointsColors.data());
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, heartPoints.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, heartPointsColors.data());
 
-    //glEnableVertexAttribArray(m_posAttr);
-    //glEnableVertexAttribArray(m_colAttr);
-    //glEnable(GL_PROGRAM_POINT_SIZE);
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
-    //glDrawArrays(GL_POINTS, 0, heartPoints.size());
+    glDrawArrays(GL_POINTS, 0, heartPoints.size());
 
-    //glDisableVertexAttribArray(m_posAttr);
-    //glDisableVertexAttribArray(m_colAttr);
-    //glDisable(GL_PROGRAM_POINT_SIZE);
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+    glDisable(GL_PROGRAM_POINT_SIZE);
 
     mProgram->release();
 }

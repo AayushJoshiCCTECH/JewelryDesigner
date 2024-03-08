@@ -3,6 +3,9 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 
+#include "heart3D.h"
+
+
 class QOpenGLTexture;
 class QOpenGLShader;
 class QOpenGLShaderProgram;
@@ -64,5 +67,7 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 
         bool mShowDroplet = false;
         bool mShowHeart = false;
+
+        QVector<Geometry::Point3D> *mHeartPoints;
 
     };
