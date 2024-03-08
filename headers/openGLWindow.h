@@ -2,6 +2,10 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
+#include "point3D.h"
+
+using namespace std;
+using namespace Geometry;
 
 class QOpenGLTexture;
 class QOpenGLShader;
@@ -16,11 +20,7 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         OpenGLWindow(const QColor & background, QMainWindow * parent);
         ~OpenGLWindow();
 
-        void renderDroplet();
-        void renderHeart();
-
-        void toggleDropletVisibility();
-        void toggleHeartVisibility();
+        void setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColor);
 
     protected:
         void paintGL() override;
@@ -43,12 +43,14 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         QOpenGLShader* mFshader = nullptr;
         QOpenGLShaderProgram* mProgram = nullptr;
 
-        QList<QVector3D> mVertices;
+        std::vector<double> mVertices;
+        std::vector<double> mColors;
         QList<QVector3D> mNormals;
         QOpenGLBuffer mVbo;
         int mVertexAttr;
         int mNormalAttr;
         int mMatrixUniform;
+
         QColor mBackground;
         QMetaObject::Connection mContextWatchConnection;
 
@@ -60,9 +62,9 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         QPoint lastPos;
         float scaleFactor = 5;
 
-        int m_frame;
+        //int m_frame;
 
-        bool mShowDroplet = false;
-        bool mShowHeart = false;
+        //bool mShowDroplet = false;
+        //bool mShowHeart = false;
 
     };

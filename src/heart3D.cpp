@@ -1,67 +1,60 @@
 #include "stdafx.h"
 #include "heart3D.h"
+#include "bezier.h"
 
 
-Geometry::Heart3D::Heart3D() {}
+Geometry::Heart3D::Heart3D()
+{
+    // Upper left part of the heart
+    mControlPoints.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(-2.0, 6.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(-4.0, 4.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
+
+    // Lower part of the heart
+    mControlPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(-4.0, -6.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(0.0, -8.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(4.0, -6.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
+
+    // Upper right part of the heart
+    mControlPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(4.0, 4.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(2.0, 6.0, 0.0));
+    mControlPoints.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
+
+    for (int i = 0; i < mGeneratedPoints.size(); ++i)
+    {
+        mColors.push_back(double(1.0));
+        mColors.push_back(double(0.0));
+        mColors.push_back(double(0.0));
+    }
+
+    compute();
+}
 
 Geometry::Heart3D::~Heart3D() {}
 
-const QVector<Geometry::Point3D>& Geometry::Heart3D::heartPoints() const
+const vector<Geometry::Point3D>& Geometry::Heart3D::curvePoints() const
 {
-    return mHeartPoints;
+    return mGeneratedPoints;
 }
 
-const QVector<double>& Geometry::Heart3D::heartCoordinates() const
+const vector<double>& Geometry::Heart3D::curveColor() const
 {
-    return mHeartCoordinates;
+    return mColors;
 }
 
-const QVector<double>& Geometry::Heart3D::heartColors() const
+void Geometry::Heart3D::compute()
 {
-    return mHeartColors;
+    BezierCurveMath::Bezier bezier;
+    bezier.calculateCurvePoints(mControlPoints, mGeneratedPoints);
 }
 
-//void Geometry::Heart3D::setHeartPoints(const QVector<Geometry::Point3D>& inHeartPoints)
-//{
-//    mHeartPoints = inHeartPoints;
-//    mHeartPoints.clear();
-//    mBezier.calculateCurvePoints(mHeartPoints, mHeartCoordinates);
-//}
-
-void Geometry::Heart3D::draw()
+void Geometry::Heart3D::addControlPoint(Point3D inPoint)
 {
-    // Upper left part of the heart
-    mHeartPoints.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(-2.0, 6.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(-4.0, 4.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
-
-    // Lower part of the heart
-    mHeartPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(-4.0, -6.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(0.0, -8.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(4.0, -6.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
-
-    // Upper right part of the heart
-    mHeartPoints.push_back(Geometry::Point3D(0.0, 0.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(4.0, 4.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(2.0, 6.0, 0.0));
-    mHeartPoints.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
-
-    mBezier.calculateCurvePoints(mHeartPoints, mHeartCoordinates);
-
-    setHeartColor();
-}
-
-void Geometry::Heart3D::setHeartColor()
-{
-    mHeartColors.clear();
-
-    for (int i = 0; i < mHeartCoordinates.size() / 3; ++i) 
-    {
-        mHeartColors.push_back(1.0); 
-        mHeartColors.push_back(0.0); 
-        mHeartColors.push_back(0.0); 
-    }
+    mControlPoints.push_back(inPoint);
+    mGeneratedPoints.clear();
+    compute();
 }

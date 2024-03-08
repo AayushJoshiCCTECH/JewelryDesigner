@@ -80,7 +80,8 @@ void Graphics::Visualizer::setupUi()
     mGridLayout->addWidget(mCustomLabel, 57, 8, 2, 1);
     mCustomLabel->setFont(font);
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) 
+    {
         mPoint3DSpinBox = new QSpinBox();
         mPoint3DSpinBox->setRange(-50, 50);
         mGridLayout->addWidget(mPoint3DSpinBox, 60, i + 6, 2, 1);
@@ -95,6 +96,7 @@ void Graphics::Visualizer::setupUi()
     // signal-slot connections
     connect(mDropletShapeButton, &QRadioButton::clicked, this, &Visualizer::onDropletShapeButtonClicked);
     connect(mHeartShapeButton, &QRadioButton::clicked, this, &Visualizer::onHeartShapeButtonClicked);
+    connect(mAddButton, &QPushButton::clicked, this, &Visualizer::onAddControlPointClicked);
 
     mWidget = new QWidget(this);
     mWidget->setLayout(mGridLayout);
@@ -105,14 +107,26 @@ void Graphics::Visualizer::setupUi()
 
 void Graphics::Visualizer::onDropletShapeButtonClicked()
 {
-    mRenderer->toggleDropletVisibility();
+    vector<Geometry::Point3D> points = mDroplet.curvePoints();
+    vector<double> colors = mDroplet.curveColor();
+
+    mRenderer->setRenderAttributes(points, colors);
     mRenderer->update();
 }
 
 
 void Graphics::Visualizer::onHeartShapeButtonClicked()
 {   
-    mRenderer->toggleHeartVisibility();
+    vector<Geometry::Point3D> points = mHeart.curvePoints();
+    vector<double> colors = mHeart.curveColor();
+    
+    mRenderer->setRenderAttributes(points, colors);
     mRenderer->update();   
 }
 
+void Graphics::Visualizer::onAddControlPointClicked()
+{
+    vector<Geometry::Point3D> points = mHeart.curvePoints();
+    vector<double> colors = mHeart.curveColor();
+    mHeart.addControlPoint(Point3D(0, 0, 0));
+}
