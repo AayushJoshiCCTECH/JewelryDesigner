@@ -18,6 +18,7 @@ namespace Graphics
         void setupUi();
         void onDropletShapeButtonClicked();
         void onHeartShapeButtonClicked();
+        void handleCurveItemSelected();
         void addNewCoordinates();
         void modifyCoordinates();
         void loadCoordinatesToSpinBox();
@@ -32,7 +33,12 @@ namespace Graphics
         QGridLayout* mGridLayout;
 
         QLabel* mShapeLabel;
-        QLabel* mCustomLabel;
+        QLabel* mCustomLabelCurves;
+        QLabel* mCustomLabelPoints;
+
+        QLabel* mCustomLabelX;
+        QLabel* mCustomLabelY;
+        QLabel* mCustomLabelZ;
 
         QListWidget* mCurvesList;
         QListWidget* mPointsList;

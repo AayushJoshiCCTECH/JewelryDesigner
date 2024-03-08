@@ -6,6 +6,26 @@
 Graphics::Visualizer::Visualizer(QWindow* parent) : QMainWindow(nullptr)
 {
     setupUi();
+       
+    mCurvesList->setVisible(false);
+    mPointsList->setVisible(false);
+    mCustomLabelCurves->setVisible(false);
+    mCustomLabelPoints->setVisible(false);
+    mCustomLabelX->setVisible(false);
+    mCustomLabelY->setVisible(false);
+    mCustomLabelZ->setVisible(false);
+
+    mAddButton->setVisible(false);
+    mModifyButton->setVisible(false);
+    mXCoordinate->setVisible(false);
+    mYCoordinate->setVisible(false);
+    mZCoordinate->setVisible(false);
+    mFinishButton->setVisible(false);
+
+    QStringList curves;
+    curves << "Curve 1" << "Curve 2" << "Curve 3"; // Add your curve names here
+    mCurvesList->addItems(curves);
+
 }
 
 Graphics::Visualizer::~Visualizer()
@@ -40,37 +60,37 @@ void Graphics::Visualizer::setupUi()
     mHeartShapeButton->setFont(font);
 
     // Customisation Tools 
-    mCustomLabel = new QLabel("Curves List");
-    mCustomLabel->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mCustomLabel, 27, 6, 2, 3);
-    mCustomLabel->setFont(font);
+    mCustomLabelCurves = new QLabel("Curves List");
+    mCustomLabelCurves->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mCustomLabelCurves, 27, 6, 2, 3);
+    mCustomLabelCurves->setFont(font);
 
     mCurvesList = new QListWidget();
     mGridLayout->addWidget(mCurvesList, 30, 6, 2, 3);
 
 
-    mCustomLabel = new QLabel("Points List");
-    mCustomLabel->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mCustomLabel, 44, 6, 2, 3);
-    mCustomLabel->setFont(font);
+    mCustomLabelPoints = new QLabel("Points List");
+    mCustomLabelPoints->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mCustomLabelPoints, 44, 6, 2, 3);
+    mCustomLabelPoints->setFont(font);
 
     mPointsList = new QListWidget();
     mGridLayout->addWidget(mPointsList, 48, 6, 2, 3);
 
-    mCustomLabel = new QLabel("X");
-    mCustomLabel->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabel, 53, 6, 2, 1);
-    mCustomLabel->setFont(font);
+    mCustomLabelX = new QLabel("X");
+    mCustomLabelX->setAlignment(Qt::AlignCenter);
+    mGridLayout->addWidget(mCustomLabelX, 53, 6, 2, 1);
+    mCustomLabelX->setFont(font);
 
-    mCustomLabel = new QLabel("Y");
-    mCustomLabel->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabel, 53, 7, 2, 1);
-    mCustomLabel->setFont(font);
+    mCustomLabelY = new QLabel("Y");
+    mCustomLabelY->setAlignment(Qt::AlignCenter);
+    mGridLayout->addWidget(mCustomLabelY, 53, 7, 2, 1);
+    mCustomLabelY->setFont(font);
 
-    mCustomLabel = new QLabel("Z");
-    mCustomLabel->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabel, 53, 8, 2, 1);
-    mCustomLabel->setFont(font);
+    mCustomLabelZ = new QLabel("Z");
+    mCustomLabelZ->setAlignment(Qt::AlignCenter);
+    mGridLayout->addWidget(mCustomLabelZ, 53, 8, 2, 1);
+    mCustomLabelZ->setFont(font);
 
     //Spin Box for X
     mXCoordinate = new QSpinBox();
@@ -115,6 +135,7 @@ void Graphics::Visualizer::setupUi()
     // signal-slot connections
     connect(mDropletShapeButton, &QRadioButton::clicked, this, &Visualizer::onDropletShapeButtonClicked);
     connect(mHeartShapeButton, &QRadioButton::clicked, this, &Visualizer::onHeartShapeButtonClicked);
+    connect(mCurvesList, &QListWidget::clicked, this, &Visualizer::handleCurveItemSelected);
     connect(mAddButton, &QPushButton::clicked, this, &Visualizer::addNewCoordinates);
     connect(mPointsList, &QListWidget::clicked, this, &Visualizer::loadCoordinatesToSpinBox);
     connect(mModifyButton, &QPushButton::clicked, this, &Visualizer::modifyCoordinates);
@@ -125,6 +146,8 @@ void Graphics::Visualizer::setupUi()
 
 void Graphics::Visualizer::onDropletShapeButtonClicked()
 {
+    mCustomLabelCurves->setVisible(true);
+    mCurvesList->setVisible(true);
     mRenderer->toggleDropletVisibility();
     mRenderer->update();
 }
@@ -132,8 +155,45 @@ void Graphics::Visualizer::onDropletShapeButtonClicked()
 
 void Graphics::Visualizer::onHeartShapeButtonClicked()
 {   
+    mCustomLabelCurves->setVisible(true);
+    mCurvesList->setVisible(true);
     mRenderer->toggleHeartVisibility();
-    mRenderer->update();   
+    mRenderer->update();
+
+}
+
+void Graphics::Visualizer::handleCurveItemSelected() 
+{
+    QListWidgetItem* selectedItem = mCurvesList->currentItem();
+
+    if (selectedItem) 
+    {
+        mCustomLabelPoints->setVisible(true);
+        mPointsList->setVisible(true);       
+        mCustomLabelX->setVisible(true);
+        mCustomLabelY->setVisible(true);
+        mCustomLabelZ->setVisible(true);
+        mXCoordinate->setVisible(true);
+        mYCoordinate->setVisible(true);
+        mZCoordinate->setVisible(true);
+        mAddButton->setVisible(true);
+        mModifyButton->setVisible(true);
+        mFinishButton->setVisible(true);
+    }
+    else 
+    {
+        mCustomLabelPoints->setVisible(false);
+        mPointsList->setVisible(false);
+        mCustomLabelX->setVisible(false);
+        mCustomLabelY->setVisible(false);
+        mCustomLabelZ->setVisible(false);
+        mXCoordinate->setVisible(false);
+        mYCoordinate->setVisible(false);
+        mZCoordinate->setVisible(false);
+        mAddButton->setVisible(false);
+        mModifyButton->setVisible(false);
+        mFinishButton->setVisible(false);
+    }
 }
 
 void Graphics::Visualizer::addNewCoordinates()
@@ -180,7 +240,6 @@ void Graphics::Visualizer::loadCoordinatesToSpinBox()
     }
 }
 
-
 void Graphics::Visualizer::modifyCoordinates()
 {
     int xValue = mXCoordinate->value();
@@ -212,3 +271,4 @@ void Graphics::Visualizer::finishCustomization()
     mAddButton->setDisabled(true);
     mModifyButton->setDisabled(true);
 }
+
