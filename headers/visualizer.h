@@ -18,26 +18,38 @@ namespace Graphics
         void setupUi();
         void onDropletShapeButtonClicked();
         void onHeartShapeButtonClicked();
+        void handleCurveItemSelected();
+        void addNewCoordinates();
+        void modifyCoordinates();
+        void loadCoordinatesToSpinBox();
+        void finishCustomization();
 
     private:
         QWidget* mWidget;
+
         OpenGLWindow* mRenderer;
 
         QGridLayout* mCentralGrid;
         QGridLayout* mGridLayout;
-        
+
         QLabel* mShapeLabel;
-        QLabel* mCustomLabel;
-        
+        QLabel* mCustomLabelCurves;
+        QLabel* mCustomLabelPoints;
+
+        QLabel* mCustomLabelX;
+        QLabel* mCustomLabelY;
+        QLabel* mCustomLabelZ;
+
         QListWidget* mCurvesList;
         QListWidget* mPointsList;
-        QListWidget* mListView;
-        
-        QSpinBox* mPoint3DSpinBox;
-        
+
+        QSpinBox* mXCoordinate;
+        QSpinBox* mYCoordinate;
+        QSpinBox* mZCoordinate;
+
         QRadioButton* mDropletShapeButton;
         QRadioButton* mHeartShapeButton;
-        
+
         QPushButton* mAddButton;
         QPushButton* mModifyButton;
         QPushButton* mFinishButton;

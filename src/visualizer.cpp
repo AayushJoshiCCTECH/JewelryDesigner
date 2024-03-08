@@ -6,6 +6,26 @@
 Graphics::Visualizer::Visualizer(QWindow* parent) : QMainWindow(nullptr)
 {
     setupUi();
+       
+    mCurvesList->setVisible(false);
+    mPointsList->setVisible(false);
+    mCustomLabelCurves->setVisible(false);
+    mCustomLabelPoints->setVisible(false);
+    mCustomLabelX->setVisible(false);
+    mCustomLabelY->setVisible(false);
+    mCustomLabelZ->setVisible(false);
+
+    mAddButton->setVisible(false);
+    mModifyButton->setVisible(false);
+    mXCoordinate->setVisible(false);
+    mYCoordinate->setVisible(false);
+    mZCoordinate->setVisible(false);
+    mFinishButton->setVisible(false);
+
+    QStringList curves;
+    curves << "Curve 1" << "Curve 2" << "Curve 3"; // Add your curve names here
+    mCurvesList->addItems(curves);
+
 }
 
 Graphics::Visualizer::~Visualizer()
@@ -33,78 +53,101 @@ void Graphics::Visualizer::setupUi()
     mGridLayout->addWidget(mDropletShapeButton, 15, 6, 1, 1.5);
     mDropletShapeButton->setFont(font);
 
+
     //Heart
     mHeartShapeButton = new QRadioButton("Heart", this);
     mGridLayout->addWidget(mHeartShapeButton, 15, 7, 1, 1.5);
     mHeartShapeButton->setFont(font);
 
     // Customisation Tools 
-    mCustomLabel = new QLabel("Curves List");
-    mCustomLabel->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mCustomLabel, 27, 6, 2, 3);
-    mCustomLabel->setFont(font);
+    mCustomLabelCurves = new QLabel("Curves List");
+    mCustomLabelCurves->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mCustomLabelCurves, 27, 6, 2, 3);
+    mCustomLabelCurves->setFont(font);
 
     mCurvesList = new QListWidget();
     mGridLayout->addWidget(mCurvesList, 30, 6, 2, 3);
 
-    mCustomLabel = new QLabel("Points List");
-    mCustomLabel->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mCustomLabel, 40, 6, 2, 3);
-    mCustomLabel->setFont(font);
 
-    mListView = new QListWidget();
-    mGridLayout->addWidget(mListView, 43, 6, 2, 3);
+    mCustomLabelPoints = new QLabel("Points List");
+    mCustomLabelPoints->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mCustomLabelPoints, 44, 6, 2, 3);
+    mCustomLabelPoints->setFont(font);
+
+    mPointsList = new QListWidget();
+    mGridLayout->addWidget(mPointsList, 48, 6, 2, 3);
+
+    mCustomLabelX = new QLabel("X");
+    mCustomLabelX->setAlignment(Qt::AlignCenter);
+    mGridLayout->addWidget(mCustomLabelX, 53, 6, 2, 1);
+    mCustomLabelX->setFont(font);
+
+    mCustomLabelY = new QLabel("Y");
+    mCustomLabelY->setAlignment(Qt::AlignCenter);
+    mGridLayout->addWidget(mCustomLabelY, 53, 7, 2, 1);
+    mCustomLabelY->setFont(font);
+
+    mCustomLabelZ = new QLabel("Z");
+    mCustomLabelZ->setAlignment(Qt::AlignCenter);
+    mGridLayout->addWidget(mCustomLabelZ, 53, 8, 2, 1);
+    mCustomLabelZ->setFont(font);
+
+    //Spin Box for X
+    mXCoordinate = new QSpinBox();
+    mXCoordinate->setRange(-50, 50);
+    mGridLayout->addWidget(mXCoordinate, 56, 6, 2, 1);
+
+    //Spin Box for X
+    mYCoordinate = new QSpinBox();
+    mYCoordinate->setRange(-50, 50);
+    mGridLayout->addWidget(mYCoordinate, 56, 7, 2, 1);
+
+    //Spin Box for X
+    mZCoordinate = new QSpinBox();
+    mZCoordinate->setRange(-50, 50);
+    mGridLayout->addWidget(mZCoordinate, 56, 8, 2, 1);
+
 
     //Add 
     mAddButton = new QPushButton("Add", this);
-    mGridLayout->addWidget(mAddButton, 53, 6, 2, 1.5);
+    mGridLayout->addWidget(mAddButton, 60, 6, 2, 1.5);
     mAddButton->setFont(font);
 
     //Modify 
     mModifyButton = new QPushButton("Modify", this);
-    mGridLayout->addWidget(mModifyButton, 53, 7, 2, 1.5);
+    mModifyButton->setDisabled(true);
     mModifyButton->setFont(font);
+    mGridLayout->addWidget(mModifyButton, 60, 7, 2, 1.5);
 
-    mCustomLabel = new QLabel("X");
-    mCustomLabel->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabel, 57, 6, 2, 1);
-    mCustomLabel->setFont(font);
-
-    mCustomLabel = new QLabel("Y");
-    mCustomLabel->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabel, 57, 7, 2, 1);
-    mCustomLabel->setFont(font);
-
-    mCustomLabel = new QLabel("Z");
-    mCustomLabel->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabel, 57, 8, 2, 1);
-    mCustomLabel->setFont(font);
-
-    for (int i = 0; i < 3; i++) {
-        mPoint3DSpinBox = new QSpinBox();
-        mPoint3DSpinBox->setRange(-50, 50);
-        mGridLayout->addWidget(mPoint3DSpinBox, 60, i + 6, 2, 1);
-    }
-
+    
     mFinishButton = new QPushButton("Finish", this);
     mGridLayout->addWidget(mFinishButton, 80, 6, 2, 3);
     mFinishButton->setFont(font);
     mFinishButton->clicked();
     mFinishButton->setStyleSheet("background-color: skyblue");
 
-    // signal-slot connections
-    connect(mDropletShapeButton, &QRadioButton::clicked, this, &Visualizer::onDropletShapeButtonClicked);
-    connect(mHeartShapeButton, &QRadioButton::clicked, this, &Visualizer::onHeartShapeButtonClicked);
 
     mWidget = new QWidget(this);
     mWidget->setLayout(mGridLayout);
     setCentralWidget(mWidget);
+
+
+    // signal-slot connections
+    connect(mDropletShapeButton, &QRadioButton::clicked, this, &Visualizer::onDropletShapeButtonClicked);
+    connect(mHeartShapeButton, &QRadioButton::clicked, this, &Visualizer::onHeartShapeButtonClicked);
+    connect(mCurvesList, &QListWidget::clicked, this, &Visualizer::handleCurveItemSelected);
+    connect(mAddButton, &QPushButton::clicked, this, &Visualizer::addNewCoordinates);
+    connect(mPointsList, &QListWidget::clicked, this, &Visualizer::loadCoordinatesToSpinBox);
+    connect(mModifyButton, &QPushButton::clicked, this, &Visualizer::modifyCoordinates);
+    connect(mFinishButton, &QPushButton::clicked, this, &Visualizer::finishCustomization);
 
     setWindowTitle(QCoreApplication::translate("Visualiser", "JewelCraft - Customize Your Sparkle", nullptr));
 }
 
 void Graphics::Visualizer::onDropletShapeButtonClicked()
 {
+    mCustomLabelCurves->setVisible(true);
+    mCurvesList->setVisible(true);
     mRenderer->toggleDropletVisibility();
     mRenderer->update();
 }
@@ -112,7 +155,128 @@ void Graphics::Visualizer::onDropletShapeButtonClicked()
 
 void Graphics::Visualizer::onHeartShapeButtonClicked()
 {   
+    mCustomLabelCurves->setVisible(true);
+    mCurvesList->setVisible(true);
     mRenderer->toggleHeartVisibility();
-    mRenderer->update();   
+    mRenderer->update();
+
+}
+
+void Graphics::Visualizer::handleCurveItemSelected() 
+{
+    QListWidgetItem* selectedItem = mCurvesList->currentItem();
+
+    if (selectedItem) 
+    {
+        mCustomLabelPoints->setVisible(true);
+        mPointsList->setVisible(true);       
+        mCustomLabelX->setVisible(true);
+        mCustomLabelY->setVisible(true);
+        mCustomLabelZ->setVisible(true);
+        mXCoordinate->setVisible(true);
+        mYCoordinate->setVisible(true);
+        mZCoordinate->setVisible(true);
+        mAddButton->setVisible(true);
+        mModifyButton->setVisible(true);
+        mFinishButton->setVisible(true);
+    }
+    else 
+    {
+        mCustomLabelPoints->setVisible(false);
+        mPointsList->setVisible(false);
+        mCustomLabelX->setVisible(false);
+        mCustomLabelY->setVisible(false);
+        mCustomLabelZ->setVisible(false);
+        mXCoordinate->setVisible(false);
+        mYCoordinate->setVisible(false);
+        mZCoordinate->setVisible(false);
+        mAddButton->setVisible(false);
+        mModifyButton->setVisible(false);
+        mFinishButton->setVisible(false);
+    }
+}
+
+void Graphics::Visualizer::addNewCoordinates()
+{
+    QString xValue = mXCoordinate->text();
+    QString yValue = mYCoordinate->text();
+    QString zValue = mZCoordinate->text();
+
+       if (!xValue.isEmpty() && !yValue.isEmpty() && !zValue.isEmpty()) 
+    {
+        QString newItem = QString("(%1, %2, %3)").arg(xValue, yValue, zValue);
+        QListWidgetItem* item = new QListWidgetItem(newItem);
+        
+        mPointsList->addItem(item);
+        mXCoordinate->clear();
+        mYCoordinate->clear();
+        mZCoordinate->clear();
+    }
+}
+
+void Graphics::Visualizer::loadCoordinatesToSpinBox()
+{
+    // Get the currently selected item
+    QListWidgetItem* selectedItem = mPointsList->currentItem();
+
+    if (selectedItem)
+    {
+        // Get the text of the selected item
+        QString text = selectedItem->text();
+
+        // Extract x, y, z values from the text
+        QStringList values = text.mid(1, text.length() - 2).split(", "); // Remove the parentheses
+
+        if (values.size() == 3)
+        {
+            // Set x, y, z values in corresponding spin boxes
+            mXCoordinate->setValue(values[0].toInt());
+            mYCoordinate->setValue(values[1].toInt());
+            mZCoordinate->setValue(values[2].toInt());
+
+            mAddButton->setDisabled(true);
+            mModifyButton->setEnabled(true); // Enable modifyButton when an item is selected
+        }
+    }
+}
+
+void Graphics::Visualizer::modifyCoordinates()
+{
+    int xValue = mXCoordinate->value();
+    int yValue = mYCoordinate->value();
+    int zValue = mZCoordinate->value();
+
+    QString modifiedItem = QString("(%1, %2, %3)").arg(QString::number(xValue), QString::number(yValue), QString::number(zValue));
+    
+    if (!modifiedItem.isEmpty()) 
+    {
+        QListWidgetItem* selectedItem = mPointsList->currentItem();
+        
+        if (selectedItem) 
+        {
+            selectedItem->setText(modifiedItem);
+            mXCoordinate->setValue(0);
+            mYCoordinate->setValue(0);
+            mZCoordinate->setValue(0);
+            
+            mModifyButton->setDisabled(true); // Disable modifyButton after modifying the item
+            mAddButton->setEnabled(true);
+        }
+    }
+
+}
+
+void Graphics::Visualizer::finishCustomization()
+{
+    mAddButton->setVisible(false);
+    mModifyButton->setVisible(false);
+    mPointsList->setVisible(false);
+    mXCoordinate->setVisible(false);
+    mYCoordinate->setVisible(false);
+    mZCoordinate->setVisible(false);
+    mCustomLabelX->setVisible(false);
+    mCustomLabelY->setVisible(false);
+    mCustomLabelZ->setVisible(false);
+    mCustomLabelPoints->setVisible(false);
 }
 
