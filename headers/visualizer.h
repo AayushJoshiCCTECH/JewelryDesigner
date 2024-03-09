@@ -59,6 +59,5 @@ namespace Graphics
 
 		Geometry::Heart3D mHeart;
 		Geometry::Droplet3D mDroplet;
-	};
+	};   
 }
-
