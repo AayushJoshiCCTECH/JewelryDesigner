@@ -21,6 +21,21 @@ double Geometry::Point3D::z() const
     return mZ;
 }
 
+void Geometry::Point3D::setX(double inX)
+{
+    this->mX = inX;
+}
+
+void Geometry::Point3D::setY(double inY)
+{
+    this->mY = inY;
+}
+
+void Geometry::Point3D::setZ(double inZ)
+{
+    this->mZ = inZ;
+}
+
 bool Geometry::Point3D::operator<(const Point3D& other) const
 {
     if (mX < other.mX)

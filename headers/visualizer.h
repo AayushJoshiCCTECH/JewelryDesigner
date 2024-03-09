@@ -35,7 +35,10 @@ namespace Graphics
 		QGridLayout* mCentralGrid;
 		QGridLayout* mGridLayout;
 
-		QString mCurrentShape;
+		string mCurrentShape;
+		string mSelectedCurve;
+
+		int	mSelectedPointIndex;
 
 		QLabel* mShapeLabel;
 		QLabel* mCustomLabelCurves;
@@ -48,9 +51,9 @@ namespace Graphics
 		QListWidget* mCurvesList;
 		QListWidget* mPointsList;
 
-		QSpinBox* mXCoordinate;
-		QSpinBox* mYCoordinate;
-		QSpinBox* mZCoordinate;
+		QDoubleSpinBox* mXCoordinate;
+		QDoubleSpinBox* mYCoordinate;
+		QDoubleSpinBox* mZCoordinate;
 
 		QRadioButton* mDropletShapeButton;
 		QRadioButton* mHeartShapeButton;

@@ -36,10 +36,18 @@ void OpenGLWindow::reset()
 }
 
 // renders shapes in window
-void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColors)
+void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColors, const vector<Point3D>& inControlVertices)
 {
+	mControlVertices.clear();
 	mVertices.clear();
 	mColors.clear();
+
+	for (size_t i = 0; i < inControlVertices.size(); i++)
+	{
+		mControlVertices.push_back(inControlVertices[i].x());
+		mControlVertices.push_back(inControlVertices[i].y());
+		mControlVertices.push_back(inControlVertices[i].z());
+	}
 
 	for (size_t i = 0; i < inVertices.size(); i++)
 	{
@@ -96,9 +104,9 @@ void OpenGLWindow::paintGL()
 
 	QMatrix4x4 matrix;
 	matrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
-	matrix.translate(0, 0, -15);
+	matrix.translate(0, 0, -200);
 	matrix.rotate(rotationAngle);
-	matrix.scale(3.0f);
+	matrix.scale(30.0f);
 
 	mProgram->setUniformValue(m_matrixUniform, matrix);
 
@@ -108,26 +116,20 @@ void OpenGLWindow::paintGL()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
 
-	glDrawArrays(GL_LINE_LOOP, 0, mVertices.size() / 3);
+	glDrawArrays(GL_LINE_LOOP, 0, mVertices.size() / 3);	
 
-	glDisableVertexAttribArray(m_posAttr);
-	glDisableVertexAttribArray(m_colAttr);
-
-	/*vector<double> vertices = mVertices;
+	vector<double> vertices = mControlVertices;
 	vector<double> colors = mColors;
 
-	 for (const auto& point : vertices)
-	{
-		 vertices.push_back(point.x());
-		 vertices.push_back(point.y());
-		 vertices.push_back(point.z());
-
-		 colors.push_back(0.0); 
-		 colors.push_back(1.0); 
-		 colors.push_back(0.0); 
+	// iterates over each point and assigns green color
+	for (const auto& point : mControlVertices)
+	{		 
+		colors.push_back(0.0); 
+		colors.push_back(1.0); 
+		colors.push_back(0.0); 
 	}
 
-	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, vertices.data());
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mControlVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, colors.data());
 
 	glEnableVertexAttribArray(m_posAttr);
@@ -138,7 +140,7 @@ void OpenGLWindow::paintGL()
 
 	glDisableVertexAttribArray(m_posAttr);
 	glDisableVertexAttribArray(m_colAttr);
-	glDisable(GL_PROGRAM_POINT_SIZE);*/
+	glDisable(GL_PROGRAM_POINT_SIZE);
 }
 
 void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)

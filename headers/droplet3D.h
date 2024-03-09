@@ -16,18 +16,18 @@ namespace Geometry
 
 		const vector<Geometry::Point3D> leftCurve() const;
 		const vector<Geometry::Point3D> rightCurve() const;
-
+		const vector<Geometry::Point3D> controlPoints() const;
 		const vector<Geometry::Point3D> curvePoints() const;
 		const vector<double> curveColor() const;
-		void addControlPoint(Point3D inPoint);
 
-	private:
+		void addControlPoint(Point3D inNewPoint, string inSelectedCurve);
+		void updateControlPoints();
+		void modifyControlPoint(Point3D inPoint, string inSelectedCurve, int inSelectedPointIndex);
 		void compute();
 
 	private:
 		vector<Geometry::Point3D> mLeftCurve;
 		vector<Geometry::Point3D> mRightCurve;
-
 		vector<Geometry::Point3D> mControlPoints;		
 		vector<Geometry::Point3D> mGeneratedPoints;
 		vector<double> mColors;

@@ -63,6 +63,11 @@ const vector<Geometry::Point3D> Geometry::Heart3D::topRightCurve() const
     return mTopRightCurve;
 }
 
+const vector<Geometry::Point3D> Geometry::Heart3D::controlPoints() const
+{
+    return mControlPoints;
+}
+
 const vector<Geometry::Point3D> Geometry::Heart3D::curvePoints() const
 {
     return mGeneratedPoints;
@@ -81,9 +86,53 @@ void Geometry::Heart3D::compute()
 }
 
 // adds a new control point
-void Geometry::Heart3D::addControlPoint(Point3D inPoint)
+void Geometry::Heart3D::addControlPoint(Point3D inNewPoint, string inSelectedCurve)
 {
-    mControlPoints.push_back(inPoint);
+    if (inSelectedCurve == "Top Left Curve")
+    {
+        mTopLeftCurve.push_back(inNewPoint);
+    }
+    else if (inSelectedCurve == "Bottom Curve")
+    {
+        mTopRightCurve.push_back(inNewPoint);
+    }
+    else if (inSelectedCurve == "Top Right Curve")
+    {
+        mBottomCurve.push_back(inNewPoint);
+    }    
     mGeneratedPoints.clear();
+}
+
+// updates selected point
+void Geometry::Heart3D::updateControlPoints()
+{
+    mControlPoints.insert(mControlPoints.end(), mTopLeftCurve.begin(), mTopLeftCurve.end());
+    mControlPoints.insert(mControlPoints.end(), mBottomCurve.begin(), mBottomCurve.end());
+    mControlPoints.insert(mControlPoints.end(), mTopRightCurve.begin(), mTopRightCurve.end());
     compute();
+}
+
+// modifies selected point
+void Geometry::Heart3D::modifyControlPoint(Point3D inPoint, string inSelectedCurve, int inSelectedPointIndex)
+{
+    if (inSelectedCurve == "Top Left Curve")
+    {
+        mTopLeftCurve[inSelectedPointIndex].setX(inPoint.x());
+        mTopLeftCurve[inSelectedPointIndex].setY(inPoint.y());
+        mTopLeftCurve[inSelectedPointIndex].setZ(inPoint.z());
+    }
+    else if (inSelectedCurve == "Bottom Curve")
+    {
+        mBottomCurve[inSelectedPointIndex].setX(inPoint.x());
+        mBottomCurve[inSelectedPointIndex].setY(inPoint.y());
+        mBottomCurve[inSelectedPointIndex].setZ(inPoint.z());
+
+    }
+    else if (inSelectedCurve == "Top Right Curve")
+    {
+        mTopRightCurve[inSelectedPointIndex].setX(inPoint.x());
+        mTopRightCurve[inSelectedPointIndex].setY(inPoint.y());
+        mTopRightCurve[inSelectedPointIndex].setZ(inPoint.z());
+    }
+    mGeneratedPoints.clear();
 }

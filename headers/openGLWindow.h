@@ -20,7 +20,7 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         OpenGLWindow(const QColor & background, QMainWindow * parent);
         ~OpenGLWindow();
 
-        void setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColor);
+        void setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColor, const vector<Point3D>& inControlVertices);
 
     protected:
         void paintGL() override;
@@ -43,6 +43,7 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         QOpenGLShader* mFshader = nullptr;
         QOpenGLShaderProgram* mProgram = nullptr;
 
+        vector<double> mControlVertices;
         vector<double> mVertices;
         vector<double> mColors;
         QList<QVector3D> mNormals;
