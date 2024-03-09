@@ -24,7 +24,7 @@ namespace Graphics
 		void onHeartShapeButtonClicked();	
 		void handleCurveItemSelection();
 		void loadCoordinatesToSpinBox();
-		void onAddControlPointButtonClicked();  //void addNewCoordinates();
+		void onAddControlPointButtonClicked();
 		void onModifyControlPointButtonClicked();
 		void onFinishCustomizationButtonClicked();
 
@@ -34,6 +34,8 @@ namespace Graphics
 
 		QGridLayout* mCentralGrid;
 		QGridLayout* mGridLayout;
+
+		QString mCurrentShape;
 
 		QLabel* mShapeLabel;
 		QLabel* mCustomLabelCurves;
