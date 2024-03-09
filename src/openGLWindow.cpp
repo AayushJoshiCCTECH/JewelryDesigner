@@ -35,6 +35,7 @@ void OpenGLWindow::reset()
 	doneCurrent();
 }
 
+// renders shapes in window
 void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColors)
 {
 	mVertices.clear();
@@ -46,13 +47,6 @@ void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const 
 		mVertices.push_back(inVertices[i].y());
 		mVertices.push_back(inVertices[i].z());
 	}
-
-	//for (size_t i = 0; i < inColors.size(); i++)
-	//{
-	//	mColors.push_back(inColors[i]);
-	//	/*mColors.push_back(inColors[i].y());
-	//	mColors.push_back(inColors[i].z());*/
-	//}
 
 	mColors = inColors;
 }
@@ -118,6 +112,33 @@ void OpenGLWindow::paintGL()
 
 	glDisableVertexAttribArray(m_posAttr);
 	glDisableVertexAttribArray(m_colAttr);
+
+	/*vector<double> vertices = mVertices;
+	vector<double> colors = mColors;
+
+	 for (const auto& point : vertices)
+	{
+		 vertices.push_back(point.x());
+		 vertices.push_back(point.y());
+		 vertices.push_back(point.z());
+
+		 colors.push_back(0.0); 
+		 colors.push_back(1.0); 
+		 colors.push_back(0.0); 
+	}
+
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, vertices.data());
+	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, colors.data());
+
+	glEnableVertexAttribArray(m_posAttr);
+	glEnableVertexAttribArray(m_colAttr);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+	glDrawArrays(GL_POINTS, 0, vertices.size() / 3);
+
+	glDisableVertexAttribArray(m_posAttr);
+	glDisableVertexAttribArray(m_colAttr);
+	glDisable(GL_PROGRAM_POINT_SIZE);*/
 }
 
 void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)
