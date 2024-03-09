@@ -32,3 +32,5 @@
 *.app
 /.vs/Visualizer
 /JewelryDesigner/x64/Debug
+/x64/Debug
+/Visualizer.vcxproj.user
