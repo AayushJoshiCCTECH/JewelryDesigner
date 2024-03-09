@@ -11,7 +11,6 @@ namespace BezierCurveMath
 		Bezier();
 		~Bezier();
 
-		//void calculateCurvePoints(QVector<Geometry::Point3D>& controlPointsList, QVector<double>& inCoordinates);// , QVector<double>& inColors);		
 		void calculateCurvePoints(vector<Geometry::Point3D>& controlPoints, vector<Geometry::Point3D>& vertices);
 		Geometry::Point3D calculateBezierPoint(vector<Geometry::Point3D>& controlPoints, double t);
 

@@ -43,8 +43,8 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         QOpenGLShader* mFshader = nullptr;
         QOpenGLShaderProgram* mProgram = nullptr;
 
-        std::vector<double> mVertices;
-        std::vector<double> mColors;
+        vector<double> mVertices;
+        vector<double> mColors;
         QList<QVector3D> mNormals;
         QOpenGLBuffer mVbo;
         int mVertexAttr;

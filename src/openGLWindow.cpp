@@ -47,12 +47,14 @@ void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const 
 		mVertices.push_back(inVertices[i].z());
 	}
 
-	for (size_t i = 0; i < inColors.size(); i++)
-	{
-		mColors.push_back(inColors[i]);
-		/*mColors.push_back(inColors[i].y());
-		mColors.push_back(inColors[i].z());*/
-	}
+	//for (size_t i = 0; i < inColors.size(); i++)
+	//{
+	//	mColors.push_back(inColors[i]);
+	//	/*mColors.push_back(inColors[i].y());
+	//	mColors.push_back(inColors[i].z());*/
+	//}
+
+	mColors = inColors;
 }
 
 
@@ -102,7 +104,7 @@ void OpenGLWindow::paintGL()
 	matrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
 	matrix.translate(0, 0, -15);
 	matrix.rotate(rotationAngle);
-	matrix.scale(50.0f);
+	matrix.scale(3.0f);
 
 	mProgram->setUniformValue(m_matrixUniform, matrix);
 

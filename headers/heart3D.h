@@ -12,8 +12,8 @@ namespace Geometry
 		Heart3D();
 		~Heart3D();
 
-		const vector<Geometry::Point3D>& curvePoints() const;
-		const vector<double>& curveColor() const;
+		const vector<Geometry::Point3D> curvePoints() const;
+		const vector<double> curveColor() const;
 		void addControlPoint(Point3D inPoint);
 
 	private:

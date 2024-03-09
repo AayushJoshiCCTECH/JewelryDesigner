@@ -1,10 +1,8 @@
 #pragma once
-// delete this comment later
 #include <QtWidgets/QMainWindow>
 
 #include "heart3D.h"
 #include "droplet3D.h"
-
 
 class OpenGLWindow;
 
@@ -23,9 +21,12 @@ namespace Graphics
 
 	private slots:
 		void onDropletShapeButtonClicked();
-		void onHeartShapeButtonClicked();
-		void onAddControlPointClicked();
-
+		void onHeartShapeButtonClicked();	
+		void handleCurveItemSelection();
+		void loadCoordinatesToSpinBox();
+		void onAddControlPointButtonClicked();  //void addNewCoordinates();
+		void onModifyControlPointButtonClicked();
+		void onFinishCustomizationButtonClicked();
 
 	private:
 		QWidget* mWidget;
@@ -35,13 +36,19 @@ namespace Graphics
 		QGridLayout* mGridLayout;
 
 		QLabel* mShapeLabel;
-		QLabel* mCustomLabel;
+		QLabel* mCustomLabelCurves;
+		QLabel* mCustomLabelPoints;
+
+		QLabel* mCustomLabelX;
+		QLabel* mCustomLabelY;
+		QLabel* mCustomLabelZ;
 
 		QListWidget* mCurvesList;
 		QListWidget* mPointsList;
-		QListWidget* mListView;
 
-		QSpinBox* mPoint3DSpinBox;
+		QSpinBox* mXCoordinate;
+		QSpinBox* mYCoordinate;
+		QSpinBox* mZCoordinate;
 
 		QRadioButton* mDropletShapeButton;
 		QRadioButton* mHeartShapeButton;

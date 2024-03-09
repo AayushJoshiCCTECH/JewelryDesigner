@@ -12,9 +12,9 @@ namespace Geometry
 		Droplet3D();
 		~Droplet3D();
 
-
-		const vector<Geometry::Point3D>& curvePoints() const;
-		const vector<double>& curveColor() const;
+		const vector<Geometry::Point3D> curvePoints() const;
+		const vector<double> curveColor() const;
+		void addControlPoint(Point3D inPoint);
 
 	private:
 		void compute();
