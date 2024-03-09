@@ -1,53 +1,49 @@
 #include "stdafx.h"
 #include "droplet3D.h"
+#include "bezier.h"
 
-Geometry::Droplet3D::Droplet3D() {}
+Geometry::Droplet3D::Droplet3D() 
+{
+    mControlPoints.push_back(Geometry::Point3D(5.0, 5.0, 5.0));
+    mControlPoints.push_back(Geometry::Point3D(5.0, 5.0, 5.0));
+    mControlPoints.push_back(Geometry::Point3D(10.0, 0.0, 5.0));
+    mControlPoints.push_back(Geometry::Point3D(10.0, -5.0, 5.0));
+
+    mControlPoints.push_back(Geometry::Point3D(10.0, -5.0, 5.0));
+    mControlPoints.push_back(Geometry::Point3D(-5.0, 5.0, 5.0));
+    mControlPoints.push_back(Geometry::Point3D(0.0, 10.0, 5.0));
+    mControlPoints.push_back(Geometry::Point3D(5.0, 5.0, 5.0));
+
+    for (int i = 0; i < mControlPoints.size(); ++i)
+    {
+        mColors.push_back(double(0.0));
+        mColors.push_back(double(0.0));
+        mColors.push_back(double(1.0));
+    }
+    compute();
+}
 
 Geometry::Droplet3D::~Droplet3D () {}
 
-
-const QVector<Geometry::Point3D>& Geometry::Droplet3D::dropletPoints() const
+const vector<Geometry::Point3D> Geometry::Droplet3D::curvePoints() const
 {
-    return mDropletPoints;
+    return mGeneratedPoints;
 }
 
-
-const QVector<double>& Geometry::Droplet3D::dropletCoordinates() const
+const vector<double> Geometry::Droplet3D::curveColor() const
 {
-    return mDropletCoordinates;
+    return mColors;
 }
 
-const QVector<double>& Geometry::Droplet3D::dropletColors() const
+void Geometry::Droplet3D::compute()
 {
-    return mDropletColors;
+    BezierCurveMath::Bezier bezier;
+    bezier.calculateCurvePoints(mControlPoints, mGeneratedPoints);
 }
 
-void Geometry::Droplet3D::draw()
+void Geometry::Droplet3D::addControlPoint(Point3D inPoint)
 {
-    mDropletPoints.push_back(Geometry::Point3D(5.0, 5.0, 5.0));
-    mDropletPoints.push_back(Geometry::Point3D(5.0, 5.0, 5.0));
-    mDropletPoints.push_back(Geometry::Point3D(10.0, 0.0, 5.0));
-    mDropletPoints.push_back(Geometry::Point3D(10.0, -5.0, 5.0));
-
-    mDropletPoints.push_back(Geometry::Point3D(10.0, -5.0, 5.0));
-    mDropletPoints.push_back(Geometry::Point3D(-5.0, 5.0, 5.0));
-    mDropletPoints.push_back(Geometry::Point3D(0.0, 10.0, 5.0));
-    mDropletPoints.push_back(Geometry::Point3D(5.0, 5.0, 5.0));
-
-    mBezier.calculateCurvePoints(mDropletPoints, mDropletCoordinates);
-
-    setDropletColor();	
-}
-
-void Geometry::Droplet3D::setDropletColor()
-{
-    
-    mDropletColors.clear();
-
-    for (int i = 0; i < mDropletCoordinates.size() / 3; ++i)
-    {
-        mDropletColors.push_back(0.678);
-        mDropletColors.push_back(0.847);
-        mDropletColors.push_back(0.902);
-    }
+    mControlPoints.push_back(inPoint);
+    mGeneratedPoints.clear();
+    compute();
 }

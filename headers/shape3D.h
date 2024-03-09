@@ -8,6 +8,6 @@ namespace Geometry
 		Shapes3D();
 		virtual ~Shapes3D();
 
-		virtual void draw() = 0;
+		virtual void draw() {};
 	};
 }

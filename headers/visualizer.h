@@ -1,58 +1,63 @@
 #pragma once
-// delete this comment later
 #include <QtWidgets/QMainWindow>
+
+#include "heart3D.h"
+#include "droplet3D.h"
 
 class OpenGLWindow;
 
 namespace Graphics
 {
-    class Visualizer : public QMainWindow
-    {
-        Q_OBJECT
+	class Visualizer : public QMainWindow
+	{
+		Q_OBJECT
 
-    public:
-        Visualizer(QWindow* parent = nullptr);
-        ~Visualizer();
-    
-    private:
-        void setupUi();
-        void onDropletShapeButtonClicked();
-        void onHeartShapeButtonClicked();
-        void handleCurveItemSelected();
-        void addNewCoordinates();
-        void modifyCoordinates();
-        void loadCoordinatesToSpinBox();
-        void finishCustomization();
+	public:
+		Visualizer(QWindow* parent = nullptr);
+		~Visualizer();
 
-    private:
-        QWidget* mWidget;
+	private:
+		void setupUi();
 
-        OpenGLWindow* mRenderer;
+	private slots:
+		void onDropletShapeButtonClicked();
+		void onHeartShapeButtonClicked();	
+		void handleCurveItemSelection();
+		void loadCoordinatesToSpinBox();
+		void onAddControlPointButtonClicked();  //void addNewCoordinates();
+		void onModifyControlPointButtonClicked();
+		void onFinishCustomizationButtonClicked();
 
-        QGridLayout* mCentralGrid;
-        QGridLayout* mGridLayout;
+	private:
+		QWidget* mWidget;
+		OpenGLWindow* mRenderer;
 
-        QLabel* mShapeLabel;
-        QLabel* mCustomLabelCurves;
-        QLabel* mCustomLabelPoints;
+		QGridLayout* mCentralGrid;
+		QGridLayout* mGridLayout;
 
-        QLabel* mCustomLabelX;
-        QLabel* mCustomLabelY;
-        QLabel* mCustomLabelZ;
+		QLabel* mShapeLabel;
+		QLabel* mCustomLabelCurves;
+		QLabel* mCustomLabelPoints;
 
-        QListWidget* mCurvesList;
-        QListWidget* mPointsList;
+		QLabel* mCustomLabelX;
+		QLabel* mCustomLabelY;
+		QLabel* mCustomLabelZ;
 
-        QSpinBox* mXCoordinate;
-        QSpinBox* mYCoordinate;
-        QSpinBox* mZCoordinate;
+		QListWidget* mCurvesList;
+		QListWidget* mPointsList;
 
-        QRadioButton* mDropletShapeButton;
-        QRadioButton* mHeartShapeButton;
+		QSpinBox* mXCoordinate;
+		QSpinBox* mYCoordinate;
+		QSpinBox* mZCoordinate;
 
-        QPushButton* mAddButton;
-        QPushButton* mModifyButton;
-        QPushButton* mFinishButton;
-    };
+		QRadioButton* mDropletShapeButton;
+		QRadioButton* mHeartShapeButton;
+
+		QPushButton* mAddButton;
+		QPushButton* mModifyButton;
+		QPushButton* mFinishButton;
+
+		Geometry::Heart3D mHeart;
+		Geometry::Droplet3D mDroplet;
+	};   
 }
-

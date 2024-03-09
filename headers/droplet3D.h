@@ -1,6 +1,8 @@
 #pragma once
 #include "shape3D.h"
-#include "bezier.h"
+#include "point3D.h"
+
+using namespace std;
 
 namespace Geometry 
 {
@@ -10,19 +12,16 @@ namespace Geometry
 		Droplet3D();
 		~Droplet3D();
 
-
-		const QVector<Geometry::Point3D>& dropletPoints() const;
-		const QVector<double>& dropletCoordinates() const;
-		const QVector<double>& dropletColors() const;
-
-		void setDropletColor();
-		void draw() override;
+		const vector<Geometry::Point3D> curvePoints() const;
+		const vector<double> curveColor() const;
+		void addControlPoint(Point3D inPoint);
 
 	private:
-		QVector<Geometry::Point3D> mDropletPoints;
-		QVector<double> mDropletCoordinates;
-		QVector<double> mDropletColors;
+		void compute();
 
-		BezierCurveMath::Bezier mBezier;
+	private:
+		vector<Geometry::Point3D> mControlPoints;		
+		vector<Geometry::Point3D> mGeneratedPoints;
+		vector<double> mColors;
 	};
 }
