@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Visualizer
+/JewelryDesigner/x64/Debug
+/JewelryDesigner/x64/Release
+/SaveFiles
+/x64

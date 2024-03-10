@@ -19,6 +19,7 @@ Graphics::Visualizer::Visualizer(QWindow* parent) : QMainWindow(nullptr)
     mXCoordinate->setVisible(false);
     mYCoordinate->setVisible(false);
     mZCoordinate->setVisible(false);
+    mSaveButton->setVisible(false);
     mFinishButton->setVisible(false);    
 }
 
@@ -117,14 +118,19 @@ void Graphics::Visualizer::setupUi()
     mModifyButton->setDisabled(true);
     mModifyButton->setFont(font);
     mGridLayout->addWidget(mModifyButton, 60, 7, 2, 1.5);
-
-
+  
     // finish button
     mFinishButton = new QPushButton("Finish", this);
-    mGridLayout->addWidget(mFinishButton, 80, 6, 2, 3);
+    mGridLayout->addWidget(mFinishButton, 75, 6, 2, 3);
     mFinishButton->setFont(font);
     mFinishButton->clicked();
     mFinishButton->setStyleSheet("background-color: skyblue");
+
+    //save button 
+    mSaveButton = new QPushButton("Save", this);
+    mGridLayout->addWidget(mSaveButton, 80, 6, 2, 3);
+    mSaveButton->setFont(font);
+    mSaveButton->setStyleSheet("background-color: skyblue");
 
     // central widget
     mWidget = new QWidget(this);
@@ -139,8 +145,11 @@ void Graphics::Visualizer::setupUi()
     connect(mAddButton, &QPushButton::clicked, this, &Visualizer::onAddControlPointButtonClicked);
     connect(mModifyButton, &QPushButton::clicked, this, &Visualizer::onModifyControlPointButtonClicked);
     connect(mFinishButton, &QPushButton::clicked, this, &Visualizer::onFinishCustomizationButtonClicked);
+    connect(mSaveButton, &QPushButton::clicked, this, &Visualizer::onSaveContentButtonClicked);
    
     setWindowTitle(QCoreApplication::translate("Visualiser", "JewelCraft - Customize Your Sparkle", nullptr));
+
+
 }
 
 // method trigger upon selecting "Droplet" radio button (displays its list of curves)
@@ -160,7 +169,7 @@ void Graphics::Visualizer::onDropletShapeButtonClicked()
     // set visibility = true for curves list and label
     mCustomLabelCurves->setVisible(true);
     mCurvesList->setVisible(true);
-
+    mSaveButton->setVisible(true);
     // set render attributes and updates renderer
     mRenderer->setRenderAttributes(points, colors, mDroplet.controlPoints());
     mRenderer->update();
@@ -183,6 +192,7 @@ void Graphics::Visualizer::onHeartShapeButtonClicked()
     // set visibility = true for curves list and label
     mCustomLabelCurves->setVisible(true);
     mCurvesList->setVisible(true);
+    mSaveButton->setVisible(true);
 
     // set render attributes and updates renderer
     mRenderer->setRenderAttributes(points, colors, mHeart.controlPoints());
@@ -248,7 +258,7 @@ void Graphics::Visualizer::handleCurveItemSelection()
         mYCoordinate->setVisible(true);
         mZCoordinate->setVisible(true);
         mAddButton->setVisible(true);
-        mModifyButton->setVisible(true);
+        mModifyButton->setVisible(true);  
         mFinishButton->setVisible(true);
     }
     else
@@ -263,7 +273,7 @@ void Graphics::Visualizer::handleCurveItemSelection()
         mYCoordinate->setVisible(false);
         mZCoordinate->setVisible(false);
         mAddButton->setVisible(false);
-        mModifyButton->setVisible(false);
+        mModifyButton->setVisible(false);    
         mFinishButton->setVisible(false);
     }
 }
@@ -425,3 +435,21 @@ void Graphics::Visualizer::onFinishCustomizationButtonClicked()
 }
 
 
+// saves shape in .png file format 
+void  Graphics::Visualizer::onSaveContentButtonClicked() {
+
+    QString defaultFilePath = "\\savefile";
+    QString filePath = QFileDialog::getSaveFileName(this, "Save File", defaultFilePath, "PNG Files (*.png)");
+
+    if (!filePath.isEmpty()) {
+        QPixmap pixmap(mRenderer->size());
+        mRenderer->render(&pixmap);
+
+        if (pixmap.save(filePath, "PNG")) {
+            QMessageBox::information(this, "Success", "File saved successfully.");
+        }
+        else {
+            QMessageBox::critical(this, "Error", "Unable to save file!");
+        }
+    }
+}

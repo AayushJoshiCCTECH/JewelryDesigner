@@ -21,12 +21,13 @@ namespace Graphics
 
 	private slots:
 		void onDropletShapeButtonClicked();
-		void onHeartShapeButtonClicked();	
+		void onHeartShapeButtonClicked();
 		void handleCurveItemSelection();
 		void loadCoordinatesToSpinBox();
 		void onAddControlPointButtonClicked();
 		void onModifyControlPointButtonClicked();
 		void onFinishCustomizationButtonClicked();
+		void onSaveContentButtonClicked();
 
 	private:
 		QWidget* mWidget;
@@ -61,6 +62,7 @@ namespace Graphics
 		QPushButton* mAddButton;
 		QPushButton* mModifyButton;
 		QPushButton* mFinishButton;
+		QPushButton* mSaveButton;
 
 		Geometry::Heart3D mHeart;
 		Geometry::Droplet3D mDroplet;
