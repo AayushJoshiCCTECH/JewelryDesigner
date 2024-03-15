@@ -17,7 +17,7 @@ OpenGLWindow::OpenGLWindow(const QColor& background, QMainWindow* parent) :
 	mBackground(background)
 {
 	setParent(parent);
-	setMinimumSize(300, 250);
+	setMinimumSize(300, 250);	
 }
 
 OpenGLWindow::~OpenGLWindow()
@@ -34,13 +34,17 @@ void OpenGLWindow::reset()
 	mVbo.destroy();
 	doneCurrent();
 }
-
+	
 // renders shapes in window
-void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColors, const vector<Point3D>& inControlVertices)
+void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColors, const vector<Point3D>& inControlVertices, 
+	const vector<double>& inOffsetVertices, const vector<double>& inConnectingVertices, const vector<double>& inNormalVertices)
 {
 	mControlVertices.clear();
 	mVertices.clear();
 	mColors.clear();
+	mOffsetVertices.clear();
+	mConnectingVertices.clear();
+	mNormalVertices.clear();
 
 	for (size_t i = 0; i < inControlVertices.size(); i++)
 	{
@@ -57,13 +61,15 @@ void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const 
 	}
 
 	mColors = inColors;
+	mOffsetVertices = inOffsetVertices;
+	mConnectingVertices = inConnectingVertices;
+	mNormalVertices = inNormalVertices;
 }
-
 
 void OpenGLWindow::initializeGL()
 {
 	static const char* vertexShaderSource =
-		"attribute highp vec4 posAttr;\n"
+		/*"attribute highp vec4 posAttr;\n"
 		"attribute lowp vec4 colAttr;\n"
 		"varying lowp vec4 col;\n"
 		"uniform highp mat4 matrix;\n"
@@ -71,13 +77,44 @@ void OpenGLWindow::initializeGL()
 		"   col = colAttr;\n"
 		"   gl_PointSize = 10.0;\n"
 		"   gl_Position = matrix * posAttr;\n"
+		"}\n";*/
+
+		"attribute highp vec4 posAttr;\n"
+		"attribute lowp vec4 colAttr;\n"
+		"attribute lowp vec3 norAttr;\n"
+		"varying lowp vec4 col;\n"
+		"varying vec3 vert;\n"
+		"varying vec3 vertNormal;\n"
+		"uniform highp mat4 projMatrix;\n"
+		"uniform highp mat4 viewMatrix;\n"
+		"uniform highp mat4 modelMatrix;\n"
+		"uniform mat3 normalMatrix;\n"
+		"void main() {\n"
+		"   col = colAttr;\n"
+		"   vert = posAttr.xyz;\n"
+		"   vertNormal = normalMatrix * norAttr;\n"
+		"   gl_Position = projMatrix * viewMatrix * modelMatrix * posAttr;\n"
 		"}\n";
 
 	static const char* fragmentShaderSource =
-		"varying lowp vec4 col;\n"
+		/*"varying lowp vec4 col;\n"
 		"void main() {\n"
 		"   gl_FragColor = col;\n"
+		"}\n";*/
+
+
+		"varying lowp vec4 col;\n"
+		"varying highp vec3 vert;\n"
+		"varying highp vec3 vertNormal;\n"
+		"uniform highp vec3 lightPos;\n"
+		"void main() {\n"
+		"   highp vec3 L = normalize(lightPos - vert);\n"
+		"   highp float NL = max(dot(normalize(vertNormal), L), 0.0);\n"
+		"   highp vec3 color = vec3(col);\n"
+		"   highp vec3 col1 = clamp(color * 0.2 + color * 0.8 * NL, 0.0, 1.0);\n"
+		"   gl_FragColor = vec4(col1, 1.0);\n"
 		"}\n";
+		
 
 	rotationAngle = QQuaternion::fromAxisAndAngle(180.0f, 0.0f, 1.0f, 0.0f);
 
@@ -91,56 +128,114 @@ void OpenGLWindow::initializeGL()
 	Q_ASSERT(m_posAttr != -1);
 	m_colAttr = mProgram->attributeLocation("colAttr");
 	Q_ASSERT(m_colAttr != -1);
-	m_matrixUniform = mProgram->uniformLocation("matrix");
-	Q_ASSERT(m_matrixUniform != -1);
+	m_normAttr = mProgram->attributeLocation("norAttr");
+	Q_ASSERT(m_normAttr != -1);
+	m_modelMatrixUniform = mProgram->uniformLocation("modelMatrix");
+	Q_ASSERT(m_modelMatrixUniform != -1);
+	m_viewMatrixUniform = mProgram->uniformLocation("viewMatrix");
+	Q_ASSERT(m_viewMatrixUniform != -1);
+	m_projectionMatrixUniform = mProgram->uniformLocation("projMatrix");
+	Q_ASSERT(m_projectionMatrixUniform != -1);
+	m_normalMatrixUniform = mProgram->uniformLocation("normalMatrix");
+	Q_ASSERT(m_normalMatrixUniform != -1);
+	m_lightPosUniform = mProgram->uniformLocation("lightPos");
+	Q_ASSERT(m_lightPosUniform != -1);
+	
 }
 
 void OpenGLWindow::paintGL()
 {
+	glClearColor(1.5f, 0.75f, 1.75f, 1.0);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	mProgram->bind();
 	glLineWidth(3.0f);
 
-	QMatrix4x4 matrix;
-	matrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
-	matrix.translate(0, 0, -200);
-	matrix.rotate(rotationAngle);
-	matrix.scale(30.0f);
+	//QMatrix4x4 matrix;
+	//matrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
+	//matrix.perspective(60.0 * scaleFactor, 4.0/3.0 * scaleFactor, 0.1, 100.0);
 
-	mProgram->setUniformValue(m_matrixUniform, matrix);
+	//float d = 500.0f; // Adjust this value based on your camera setup
+	//float fov = 2.0f * atan((100.0f * scaleFactor) / d) * 180.0f / M_PI;
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mVertices.data());
+	//float aspectRatio = (100.0f * scaleFactor) / (100.0f * scaleFactor);
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
+	//matrix.perspective(fov, aspectRatio, 0.1, 10000.0);
 
-	glDrawArrays(GL_LINE_LOOP, 0, mVertices.size() / 3);	
+	/*matrix.translate(0, 0, -4);
+	matrix.rotate(rotationAngle);*/
+	//matrix.scale(3.0f);
 
-	vector<double> vertices = mControlVertices;
-	vector<double> colors = mColors;
+	/*mProgram->setUniformValue(m_matrixUniform, matrix);*/
 
-	// iterates over each point and assigns green color
-	for (const auto& point : mControlVertices)
-	{		 
-		colors.push_back(0.0); 
-		colors.push_back(1.0); 
-		colors.push_back(0.0); 
-	}
+	QMatrix4x4 modelMatrix;
+	QMatrix4x4 translationMatrix;
+	QMatrix4x4 scaleMatrix;
+	QMatrix4x4 rotationMatrix;
+	QMatrix4x4 viewMatrix;
+	QMatrix4x4 projectionMatrix;
+	QMatrix3x3 normalMatrix;
+	QVector3D lightPos;
 
-	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mControlVertices.data());
-	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, colors.data());
 
+	lightPos = QVector3D(0.0f, 0.0f, 20.0f);
+	projectionMatrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
+
+	//projectionMatrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+	//projectionMatrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
+	
+
+	//float d = 500.0f; // Adjust this value based on your camera setup
+	//float fov = 2.0f * atan((100.0f * scaleFactor) / d) * 180.0f / M_PI;
+
+	//float aspectRatio = (100.0f * scaleFactor) / (100.0f * scaleFactor);
+
+	//projectionMatrix.perspective(fov, aspectRatio, 0.1, 10000.0);
+	
+	translationMatrix.translate(0, 200, -400);
+	scaleMatrix.scale(30.0);
+	rotationMatrix.rotate(rotationAngle);
+
+	modelMatrix = translationMatrix * scaleMatrix * rotationMatrix;
+	viewMatrix.setToIdentity();
+	normalMatrix = (modelMatrix.normalMatrix()).transposed();
+	normalMatrix = (modelMatrix.normalMatrix());
+
+
+	mProgram->setUniformValue(m_modelMatrixUniform, modelMatrix);
+	mProgram->setUniformValue(m_viewMatrixUniform, viewMatrix);
+	mProgram->setUniformValue(m_projectionMatrixUniform, projectionMatrix);
+	mProgram->setUniformValue(m_normalMatrixUniform, normalMatrix);
+	mProgram->setUniformValue(m_lightPosUniform, lightPos);
+
+	// Enable vertex attributes
 	glEnableVertexAttribArray(m_posAttr);
 	glEnableVertexAttribArray(m_colAttr);
-	glEnable(GL_PROGRAM_POINT_SIZE);
+	glEnableVertexAttribArray(m_normAttr);
 
-	glDrawArrays(GL_POINTS, 0, vertices.size() / 3);
+	// draw original heart curve
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mVertices.data());
+	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glDrawArrays(GL_LINE_LOOP, 0, mVertices.size() / 3);
+	
+	// draw the extruded heart curve
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mOffsetVertices.data());
+	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glDrawArrays(GL_LINE_LOOP, 0, mOffsetVertices.size() / 3);
+	
+	// draw connecting triangles between original and offset curves
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mConnectingVertices.data());
+	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, mConnectingVertices.size() / 3);
 
+	// Disable vertex attributes
 	glDisableVertexAttribArray(m_posAttr);
 	glDisableVertexAttribArray(m_colAttr);
-	glDisable(GL_PROGRAM_POINT_SIZE);
+	glDisableVertexAttribArray(m_normAttr);
 }
 
 void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)

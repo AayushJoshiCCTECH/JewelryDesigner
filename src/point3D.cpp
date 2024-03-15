@@ -36,29 +36,26 @@ void Geometry::Point3D::setZ(double inZ)
     this->mZ = inZ;
 }
 
-bool Geometry::Point3D::operator<(const Point3D& other) const
+// overload the subtraction operator
+Geometry::Point3D Geometry::Point3D::operator-(const Geometry::Point3D& other) const
 {
-    if (mX < other.mX)
-        return true;
-    if (mX > other.mX)
-        return false;
-
-    if (mY < other.mY)
-        return true;
-    if (mY > other.mY)
-        return false;
-
-    return mZ < other.mZ;
+    return Geometry::Point3D(mX - other.mX, mY - other.mY, mZ - other.mZ);
 }
 
-
-Geometry::Point3D& Geometry::Point3D::operator=(const Point3D& other) 
+// cross product
+Geometry::Point3D Geometry::Point3D::cross(const Geometry::Point3D& other) const
 {
-    if (this != &other) 
-    { 
-        mX = other.mX;
-        mY = other.mY;
-        mZ = other.mZ;
-    }
-    return *this;
+    return Point3D
+    (
+        mY * other.mZ - mZ * other.mY,
+        mZ * other.mX - mX * other.mZ,
+        mX * other.mY - mY * other.mX
+    );
+}
+
+// normalization
+Geometry::Point3D Geometry::Point3D::normalize() const
+{
+    double length = std::sqrt(mX * mX + mY * mY + mZ * mZ);
+    return Point3D(mX / length, mY / length, mZ / length);
 }

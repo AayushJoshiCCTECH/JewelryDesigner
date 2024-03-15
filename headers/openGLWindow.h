@@ -20,7 +20,9 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         OpenGLWindow(const QColor & background, QMainWindow * parent);
         ~OpenGLWindow();
 
-        void setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColor, const vector<Point3D>& inControlVertices);
+        void setRenderAttributes(const vector<Point3D>& inVertices, const vector<double>& inColor, 
+            const vector<Point3D>& inControlVertices, const vector<double>& inOffsetVertices,
+            const vector<double>& inConnectingVertices, const vector<double>& inNormalVertices);
 
     protected:
         void paintGL() override;
@@ -46,6 +48,10 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         vector<double> mControlVertices;
         vector<double> mVertices;
         vector<double> mColors;
+        vector<double> mOffsetVertices;
+        vector<double> mConnectingVertices;
+        vector<double> mNormalVertices;
+
         QList<QVector3D> mNormals;
         QOpenGLBuffer mVbo;
         int mVertexAttr;
@@ -57,15 +63,18 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 
         GLint m_posAttr = 0;
         GLint m_colAttr = 0;
+        GLint m_normAttr = 0;
+
+
         GLint m_matrixUniform = 0;
+
+        GLint m_projectionMatrixUniform = 0;
+        GLint m_viewMatrixUniform = 0;
+        GLint m_modelMatrixUniform = 0;
+        GLint m_normalMatrixUniform = 0;
+        GLint m_lightPosUniform = 0;
 
         QQuaternion rotationAngle;
         QPoint lastPos;
-        float scaleFactor = 5;
-
-        //int m_frame;
-
-        //bool mShowDroplet = false;
-        //bool mShowHeart = false;
-
+        float scaleFactor = 5; 
     };

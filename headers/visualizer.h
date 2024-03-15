@@ -22,12 +22,12 @@ namespace Graphics
 	private slots:
 		void onDropletShapeButtonClicked();
 		void onHeartShapeButtonClicked();
-		void handleCurveItemSelection();
+		void handleCurveItemSelection(const QModelIndex& index);
 		void loadCoordinatesToSpinBox();
 		void onAddControlPointButtonClicked();
 		void onModifyControlPointButtonClicked();
-		void onFinishCustomizationButtonClicked();
-		void onSaveContentButtonClicked();
+		void onSaveImageButtonClicked();
+		void onResetButtonClicked();
 
 	private:
 		QWidget* mWidget;
@@ -39,30 +39,30 @@ namespace Graphics
 		string mCurrentShape;
 		string mSelectedCurve;
 
+		int	mSelectedCurveIndex;
 		int	mSelectedPointIndex;
 
 		QLabel* mShapeLabel;
 		QLabel* mCustomLabelCurves;
 		QLabel* mCustomLabelPoints;
-
-		QLabel* mCustomLabelX;
-		QLabel* mCustomLabelY;
-		QLabel* mCustomLabelZ;
+		QLabel* mXCoordinateLabel;
+		QLabel* mYCoordinateLabel;
+		QLabel* mZCoordinateLabel;
 
 		QListWidget* mCurvesList;
 		QListWidget* mPointsList;
 
-		QDoubleSpinBox* mXCoordinate;
-		QDoubleSpinBox* mYCoordinate;
-		QDoubleSpinBox* mZCoordinate;
+		QSpinBox* mXCoordinate;
+		QSpinBox* mYCoordinate;
+		QSpinBox* mZCoordinate;
 
 		QRadioButton* mDropletShapeButton;
 		QRadioButton* mHeartShapeButton;
 
 		QPushButton* mAddButton;
-		QPushButton* mModifyButton;
-		QPushButton* mFinishButton;
-		QPushButton* mSaveButton;
+		QPushButton* mModifyButton;		
+		QPushButton* mResetButton;
+		QPushButton* mSaveImageButton;
 
 		Geometry::Heart3D mHeart;
 		Geometry::Droplet3D mDroplet;
