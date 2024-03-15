@@ -66,20 +66,26 @@ void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const 
 	mNormalVertices = inNormalVertices;
 }
 
+// renders the selected curve
+void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inSelectedCurveGeneratedPoints, const vector<double>& inSelctedCurveColors)
+{
+	mSelectedCurveGeneratedPoints.clear();
+	mSelectedCurveColors.clear();
+
+	for (size_t i = 0; i < inSelectedCurveGeneratedPoints.size(); i++)
+	{
+		mSelectedCurveGeneratedPoints.push_back(inSelectedCurveGeneratedPoints[i].x());
+		mSelectedCurveGeneratedPoints.push_back(inSelectedCurveGeneratedPoints[i].y());
+		mSelectedCurveGeneratedPoints.push_back(inSelectedCurveGeneratedPoints[i].z());
+	}
+
+	mSelectedCurveColors = inSelctedCurveColors;
+}
+
 void OpenGLWindow::initializeGL()
 {
 	static const char* vertexShaderSource =
-		/*"attribute highp vec4 posAttr;\n"
-		"attribute lowp vec4 colAttr;\n"
-		"varying lowp vec4 col;\n"
-		"uniform highp mat4 matrix;\n"
-		"void main() {\n"
-		"   col = colAttr;\n"
-		"   gl_PointSize = 10.0;\n"
-		"   gl_Position = matrix * posAttr;\n"
-		"}\n";*/
-
-		"attribute highp vec4 posAttr;\n"
+		"attribute highp vec4 posAttr; \n"
 		"attribute lowp vec4 colAttr;\n"
 		"attribute lowp vec3 norAttr;\n"
 		"varying lowp vec4 col;\n"
@@ -92,17 +98,12 @@ void OpenGLWindow::initializeGL()
 		"void main() {\n"
 		"   col = colAttr;\n"
 		"   vert = posAttr.xyz;\n"
+		"   gl_PointSize = 10.0;\n"
 		"   vertNormal = normalMatrix * norAttr;\n"
 		"   gl_Position = projMatrix * viewMatrix * modelMatrix * posAttr;\n"
 		"}\n";
 
-	static const char* fragmentShaderSource =
-		/*"varying lowp vec4 col;\n"
-		"void main() {\n"
-		"   gl_FragColor = col;\n"
-		"}\n";*/
-
-
+	static const char* fragmentShaderSource =		
 		"varying lowp vec4 col;\n"
 		"varying highp vec3 vert;\n"
 		"varying highp vec3 vertNormal;\n"
@@ -139,8 +140,7 @@ void OpenGLWindow::initializeGL()
 	m_normalMatrixUniform = mProgram->uniformLocation("normalMatrix");
 	Q_ASSERT(m_normalMatrixUniform != -1);
 	m_lightPosUniform = mProgram->uniformLocation("lightPos");
-	Q_ASSERT(m_lightPosUniform != -1);
-	
+	Q_ASSERT(m_lightPosUniform != -1);	
 }
 
 void OpenGLWindow::paintGL()
@@ -150,52 +150,27 @@ void OpenGLWindow::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	mProgram->bind();
-	glLineWidth(3.0f);
-
-	//QMatrix4x4 matrix;
-	//matrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
-	//matrix.perspective(60.0 * scaleFactor, 4.0/3.0 * scaleFactor, 0.1, 100.0);
-
-	//float d = 500.0f; // Adjust this value based on your camera setup
-	//float fov = 2.0f * atan((100.0f * scaleFactor) / d) * 180.0f / M_PI;
-
-	//float aspectRatio = (100.0f * scaleFactor) / (100.0f * scaleFactor);
-
-	//matrix.perspective(fov, aspectRatio, 0.1, 10000.0);
-
-	/*matrix.translate(0, 0, -4);
-	matrix.rotate(rotationAngle);*/
-	//matrix.scale(3.0f);
-
-	/*mProgram->setUniformValue(m_matrixUniform, matrix);*/
-
+	glLineWidth(5.0f);
+		
 	QMatrix4x4 modelMatrix;
 	QMatrix4x4 translationMatrix;
 	QMatrix4x4 scaleMatrix;
 	QMatrix4x4 rotationMatrix;
+	QMatrix4x4 rotationMatrix1;
+	QMatrix4x4 rotationMatrix2;
 	QMatrix4x4 viewMatrix;
 	QMatrix4x4 projectionMatrix;
 	QMatrix3x3 normalMatrix;
 	QVector3D lightPos;
 
-
 	lightPos = QVector3D(0.0f, 0.0f, 20.0f);
 	projectionMatrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
 
-	//projectionMatrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
-	//projectionMatrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
-	
-
-	//float d = 500.0f; // Adjust this value based on your camera setup
-	//float fov = 2.0f * atan((100.0f * scaleFactor) / d) * 180.0f / M_PI;
-
-	//float aspectRatio = (100.0f * scaleFactor) / (100.0f * scaleFactor);
-
-	//projectionMatrix.perspective(fov, aspectRatio, 0.1, 10000.0);
-	
 	translationMatrix.translate(0, 200, -400);
 	scaleMatrix.scale(30.0);
-	rotationMatrix.rotate(rotationAngle);
+	rotationMatrix1.rotate(rotationAngle);
+	rotationMatrix2.rotate(180.0, 0.0, 1.0, 0.0);
+	rotationMatrix = rotationMatrix1 * rotationMatrix2;
 
 	modelMatrix = translationMatrix * scaleMatrix * rotationMatrix;
 	viewMatrix.setToIdentity();
@@ -214,13 +189,27 @@ void OpenGLWindow::paintGL()
 	glEnableVertexAttribArray(m_colAttr);
 	glEnableVertexAttribArray(m_normAttr);
 
-	// draw original heart curve
+	// draw original shape curve
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
 	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
 	glDrawArrays(GL_LINE_LOOP, 0, mVertices.size() / 3);
+
+	// draw control points
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mControlVertices.data());
+	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glDrawArrays(GL_POINTS, 0, mControlVertices.size() / 3);
+	glDisable(GL_PROGRAM_POINT_SIZE);
+
+	// highlight selected curve
+	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mSelectedCurveGeneratedPoints.data());
+	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mSelectedCurveColors.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glDrawArrays(GL_LINES, 0, mSelectedCurveGeneratedPoints.size() / 3);
 	
-	// draw the extruded heart curve
+	// draw the extruded shape curve
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mOffsetVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
 	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());

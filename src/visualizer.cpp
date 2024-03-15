@@ -159,6 +159,9 @@ void Graphics::Visualizer::setupUi()
 // method trigger upon selecting "Droplet" radio button (displays its list of curves)
 void Graphics::Visualizer::onDropletShapeButtonClicked()
 {
+    mSelectedCurveGeneratedPoints.clear();
+    mSelectedCurveColors.clear();
+
     // hide widget visibility
     mCustomLabelPoints->setVisible(false);
     mPointsList->setVisible(false); 
@@ -198,6 +201,9 @@ void Graphics::Visualizer::onDropletShapeButtonClicked()
 // method trigger upon selecting "Heart" radio button (displays its list of curves)
 void Graphics::Visualizer::onHeartShapeButtonClicked()
 {   
+    mSelectedCurveGeneratedPoints.clear();
+    mSelectedCurveColors.clear();
+
     // hide widget visibility
     mCustomLabelPoints->setVisible(false);
     mPointsList->setVisible(false);
@@ -254,7 +260,7 @@ void Graphics::Visualizer::handleCurveItemSelection(const QModelIndex& index)
         {
             if (mSelectedCurve == "Top Left Curve")
             {
-                curvePoints = mHeart.topLeftCurve();
+                curvePoints = mHeart.topRightCurve();
             }
             else if (mSelectedCurve == "Bottom Curve")
             {
@@ -262,7 +268,7 @@ void Graphics::Visualizer::handleCurveItemSelection(const QModelIndex& index)
             }
             else if (mSelectedCurve == "Top Right Curve")
             {
-                curvePoints = mHeart.topRightCurve();
+                curvePoints = mHeart.topLeftCurve();
             }
         }
         else if (mCurrentShape == "Droplet")
@@ -276,6 +282,21 @@ void Graphics::Visualizer::handleCurveItemSelection(const QModelIndex& index)
                 curvePoints = mDroplet.rightCurve();
             }
         }     
+
+        mSelectedCurveGeneratedPoints.clear();
+        mSelectedCurveColors.clear();
+
+        mBezier.calculateCurvePoints(curvePoints, mSelectedCurveGeneratedPoints);
+
+        for (int i = 0; i < mSelectedCurveGeneratedPoints.size(); ++i)
+        {           
+            mSelectedCurveColors.push_back(double(1.0));
+            mSelectedCurveColors.push_back(double(1.0));
+            mSelectedCurveColors.push_back(double(1.0));
+        }
+
+        mRenderer->setRenderAttributes(mSelectedCurveGeneratedPoints, mSelectedCurveColors);
+
         // clear points list
         mPointsList->clear();
 

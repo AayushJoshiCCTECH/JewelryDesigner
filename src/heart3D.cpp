@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const QStringList Geometry::Heart3D::CURVE_NAMES = { "Top Left Curve", "Bottom Curve", "Top Right Curve" };
+const QStringList Geometry::Heart3D::CURVE_NAMES = { "Top Right Curve", "Bottom Curve", "Top Left Curve" };
 
 // default constructor
 Geometry::Heart3D::Heart3D()
@@ -30,6 +30,11 @@ Geometry::Heart3D::Heart3D()
     mTopRightCurve.push_back(Geometry::Point3D(4.0, 4.0, 0.0));
     mTopRightCurve.push_back(Geometry::Point3D(2.0, 6.0, 0.0));
     mTopRightCurve.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
+
+   /* mTopRightCurve.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
+    mTopRightCurve.push_back(Geometry::Point3D(-2.0, 6.0, 0.0));
+    mTopRightCurve.push_back(Geometry::Point3D(-4.0, 4.0, 0.0));
+    mTopRightCurve.push_back(Geometry::Point3D(0.0, 0.0, 0.0));*/
 
     mControlPoints.clear();
     mControlPoints.insert(mControlPoints.end(), mTopLeftCurve.begin(), mTopLeftCurve.end());
