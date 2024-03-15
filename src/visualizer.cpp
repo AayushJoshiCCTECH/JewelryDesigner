@@ -159,9 +159,6 @@ void Graphics::Visualizer::setupUi()
 // method trigger upon selecting "Droplet" radio button (displays its list of curves)
 void Graphics::Visualizer::onDropletShapeButtonClicked()
 {
-    mSelectedCurveGeneratedPoints.clear();
-    mSelectedCurveColors.clear();
-
     // hide widget visibility
     mCustomLabelPoints->setVisible(false);
     mPointsList->setVisible(false); 
@@ -200,11 +197,7 @@ void Graphics::Visualizer::onDropletShapeButtonClicked()
 
 // method trigger upon selecting "Heart" radio button (displays its list of curves)
 void Graphics::Visualizer::onHeartShapeButtonClicked()
-{   
-    mSelectedCurveGeneratedPoints.clear();
-    mSelectedCurveColors.clear();
-
-    // hide widget visibility
+{   // hide widget visibility
     mCustomLabelPoints->setVisible(false);
     mPointsList->setVisible(false);
     mXCoordinateLabel->setVisible(false);
@@ -380,7 +373,8 @@ void Graphics::Visualizer::onAddControlPointButtonClicked()
         mHeart.compute();
         mHeart.generateOffsetAndConnectingVertices();
         mRenderer->setRenderAttributes(mHeart.curvePoints(), mHeart.curveColor(), mHeart.controlPoints(),
-                mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());           
+                mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());
+        mRenderer->setRenderAttributes(mSelectedCurveGeneratedPoints, mSelectedCurveColors);
     }
     // add input values as a control point to "mDroplet" object
     else if (mCurrentShape == "Droplet")
@@ -391,6 +385,7 @@ void Graphics::Visualizer::onAddControlPointButtonClicked()
         mDroplet.generateOffsetAndConnectingVertices();
         mRenderer->setRenderAttributes(mDroplet.curvePoints(), mDroplet.curveColor(), mDroplet.controlPoints(),
             mDroplet.offsetVertices(), mDroplet.connectingVertices(), mHeart.normalVertices());
+        mRenderer->setRenderAttributes(mSelectedCurveGeneratedPoints, mSelectedCurveColors);
     }
     mRenderer->update();
     mResetButton->setVisible(true);
@@ -436,7 +431,8 @@ void Graphics::Visualizer::onModifyControlPointButtonClicked()
                 mHeart.updateControlPoints();
                 mHeart.generateOffsetAndConnectingVertices();
                 mRenderer->setRenderAttributes(mHeart.curvePoints(), mHeart.curveColor(), mHeart.controlPoints(),
-                    mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());                               
+                    mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());    
+                mRenderer->setRenderAttributes(mSelectedCurveGeneratedPoints, mSelectedCurveColors);
             }
             else if (mCurrentShape == "Droplet")
             {
@@ -445,6 +441,7 @@ void Graphics::Visualizer::onModifyControlPointButtonClicked()
                 mDroplet.generateOffsetAndConnectingVertices();
                 mRenderer->setRenderAttributes(mDroplet.curvePoints(), mDroplet.curveColor(), mDroplet.controlPoints(),
                     mDroplet.offsetVertices(), mDroplet.connectingVertices(), mHeart.normalVertices());
+                mRenderer->setRenderAttributes(mSelectedCurveGeneratedPoints, mSelectedCurveColors);
             }
             mRenderer->update();
 
