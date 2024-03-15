@@ -16,9 +16,11 @@ namespace Geometry
         void setY(double inY);
         void setZ(double inZ);
 
-        bool operator<(const Point3D& other) const;
-        Point3D& operator=(const Point3D& other);
+        Point3D cross(const Point3D& other) const;
+        Point3D normalize() const;
 
+        Point3D operator-(const Point3D& other) const;
+               
     private:
         double mX;
         double mY;

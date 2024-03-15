@@ -10,17 +10,17 @@ Graphics::Visualizer::Visualizer(QWindow* parent) : QMainWindow(nullptr)
     mCurvesList->setVisible(false);
     mPointsList->setVisible(false);
     mCustomLabelCurves->setVisible(false);
-    mCustomLabelPoints->setVisible(false);
-    mCustomLabelX->setVisible(false);
-    mCustomLabelY->setVisible(false);
-    mCustomLabelZ->setVisible(false);
+    mCustomLabelPoints->setVisible(false);   
     mAddButton->setVisible(false);
     mModifyButton->setVisible(false);
+    mXCoordinateLabel->setVisible(false);
+    mYCoordinateLabel->setVisible(false);
+    mZCoordinateLabel->setVisible(false);
     mXCoordinate->setVisible(false);
     mYCoordinate->setVisible(false);
     mZCoordinate->setVisible(false);
-    mSaveButton->setVisible(false);
-    mFinishButton->setVisible(false);    
+    mResetButton->setVisible(false);
+    mSaveImageButton->setVisible(false);
 }
 
 Graphics::Visualizer::~Visualizer()
@@ -37,101 +37,107 @@ void Graphics::Visualizer::setupUi()
 
     // window
     mRenderer = new OpenGLWindow(QColor(1, 1, 0), this);
-    mGridLayout->addWidget(mRenderer, 0, 0, 100, 6);
+    mGridLayout->addWidget(mRenderer, 0, 0, 100, 8);
 
     // shape options
     mShapeLabel = new QLabel("Choose Shape");
     mShapeLabel->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mShapeLabel, 11, 6, 2, 3);
+    mGridLayout->addWidget(mShapeLabel, 2, 8, 2, 1);
     mShapeLabel->setFont(font);
 
     // droplet button
     mDropletShapeButton = new QRadioButton("Droplet", this);
-    mGridLayout->addWidget(mDropletShapeButton, 15, 6, 1, 1.5);
+    mGridLayout->addWidget(mDropletShapeButton, 5, 8, 1, 1);
     mDropletShapeButton->setFont(font);
 
     // heart button
     mHeartShapeButton = new QRadioButton("Heart", this);
-    mGridLayout->addWidget(mHeartShapeButton, 15, 7, 1, 1.5);
+    mGridLayout->addWidget(mHeartShapeButton, 6, 8, 1, 1);
     mHeartShapeButton->setFont(font);
 
     // curve text label
     mCustomLabelCurves = new QLabel("Curves List");
     mCustomLabelCurves->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mCustomLabelCurves, 27, 6, 2, 3);
+    mGridLayout->addWidget(mCustomLabelCurves, 10, 8, 1, 1);
     mCustomLabelCurves->setFont(font);
 
     // curves list
     mCurvesList = new QListWidget();
-    mGridLayout->addWidget(mCurvesList, 30, 6, 2, 3);
+    mGridLayout->addWidget(mCurvesList, 11, 8, 1, 1);
+    mCurvesList->setFixedWidth(100);
+    mCurvesList->setFixedHeight(100);
 
     // point text label
     mCustomLabelPoints = new QLabel("Points List");
     mCustomLabelPoints->setAlignment(Qt::AlignLeft);
-    mGridLayout->addWidget(mCustomLabelPoints, 44, 6, 2, 3);
+    mGridLayout->addWidget(mCustomLabelPoints, 15, 8, 1, 1);
     mCustomLabelPoints->setFont(font);
 
     // points list
     mPointsList = new QListWidget();
-    mGridLayout->addWidget(mPointsList, 48, 6, 2, 3);
+    mGridLayout->addWidget(mPointsList, 16, 8, 1, 1);
+    mPointsList->setFixedWidth(100);
+    mPointsList->setFixedHeight(100);
 
-    // "X" text label  
-    mCustomLabelX = new QLabel("X");
-    mCustomLabelX->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabelX, 53, 6, 2, 1);
-    mCustomLabelX->setFont(font);
-
-    // "Y" text label
-    mCustomLabelY = new QLabel("Y");
-    mCustomLabelY->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabelY, 53, 7, 2, 1);
-    mCustomLabelY->setFont(font);
-
-    // "Z" text label
-    mCustomLabelZ = new QLabel("Z");
-    mCustomLabelZ->setAlignment(Qt::AlignCenter);
-    mGridLayout->addWidget(mCustomLabelZ, 53, 8, 2, 1);
-    mCustomLabelZ->setFont(font);
+    // "X" coordinate label
+    mXCoordinateLabel = new QLabel("X: ");
+    mXCoordinateLabel->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mXCoordinateLabel, 20, 8, 1, 1);
+    mXCoordinateLabel->setFont(font);
 
     // spin Box for "X"
-    mXCoordinate = new QDoubleSpinBox();
+    mXCoordinate = new QSpinBox();
     mXCoordinate->setRange(-50, 50);
-    mGridLayout->addWidget(mXCoordinate, 56, 6, 2, 1);
+    mGridLayout->addWidget(mXCoordinate, 21, 8, 1, 1);
+    //mXCoordinate->setPrefix("X: ");
+
+    // "Y" coordinate label
+    mYCoordinateLabel = new QLabel("Y: ");
+    mYCoordinateLabel->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mYCoordinateLabel, 22, 8, 1, 1);
+    mYCoordinateLabel->setFont(font);
 
     // spin Box for "Y"
-    mYCoordinate = new QDoubleSpinBox();
+    mYCoordinate = new QSpinBox();
     mYCoordinate->setRange(-50, 50);
-    mGridLayout->addWidget(mYCoordinate, 56, 7, 2, 1);
+    mGridLayout->addWidget(mYCoordinate, 23, 8, 1, 1);
+    //mYCoordinate->setPrefix("Y: ");
+
+    // "Z" coordinate label
+    mZCoordinateLabel = new QLabel("Z: ");
+    mZCoordinateLabel->setAlignment(Qt::AlignLeft);
+    mGridLayout->addWidget(mZCoordinateLabel, 24, 8, 1, 1);
+    mZCoordinateLabel->setFont(font);
 
     // spin Box for "Z"
-    mZCoordinate = new QDoubleSpinBox();
+    mZCoordinate = new QSpinBox();
     mZCoordinate->setRange(-50, 50);
-    mGridLayout->addWidget(mZCoordinate, 56, 8, 2, 1);
+    mGridLayout->addWidget(mZCoordinate, 25, 8, 1, 1);
+    //mZCoordinate->setPrefix("Z: ");
 
     // add button
     mAddButton = new QPushButton("Add", this);
-    mGridLayout->addWidget(mAddButton, 60, 6, 2, 1.5);
+    mGridLayout->addWidget(mAddButton, 29, 8, 1, 1);
     mAddButton->setFont(font);
 
     // modify button
     mModifyButton = new QPushButton("Modify", this);
     mModifyButton->setDisabled(true);
     mModifyButton->setFont(font);
-    mGridLayout->addWidget(mModifyButton, 60, 7, 2, 1.5);
-  
-    // finish button
-    mFinishButton = new QPushButton("Finish", this);
-    mGridLayout->addWidget(mFinishButton, 75, 6, 2, 3);
-    mFinishButton->setFont(font);
-    mFinishButton->clicked();
-    mFinishButton->setStyleSheet("background-color: skyblue");
+    mGridLayout->addWidget(mModifyButton, 31, 8, 1, 1);
+   
+    //reset button 
+    mResetButton = new QPushButton("Reset Shape", this);
+    mGridLayout->addWidget(mResetButton, 33, 8, 1, 1);
+    mResetButton->setFont(font);
+    mResetButton->setStyleSheet("background-color: skyblue");
 
     //save button 
-    mSaveButton = new QPushButton("Save", this);
-    mGridLayout->addWidget(mSaveButton, 80, 6, 2, 3);
-    mSaveButton->setFont(font);
-    mSaveButton->setStyleSheet("background-color: skyblue");
-
+    mSaveImageButton = new QPushButton("Save as Image", this);
+    mGridLayout->addWidget(mSaveImageButton, 40, 8, 1, 1);
+    mSaveImageButton->setFont(font);
+    mSaveImageButton->setStyleSheet("background-color: skyblue");
+        
     // central widget
     mWidget = new QWidget(this);
     mWidget->setLayout(mGridLayout);
@@ -144,17 +150,27 @@ void Graphics::Visualizer::setupUi()
     connect(mPointsList, &QListWidget::clicked, this, &Visualizer::loadCoordinatesToSpinBox);
     connect(mAddButton, &QPushButton::clicked, this, &Visualizer::onAddControlPointButtonClicked);
     connect(mModifyButton, &QPushButton::clicked, this, &Visualizer::onModifyControlPointButtonClicked);
-    connect(mFinishButton, &QPushButton::clicked, this, &Visualizer::onFinishCustomizationButtonClicked);
-    connect(mSaveButton, &QPushButton::clicked, this, &Visualizer::onSaveContentButtonClicked);
+    connect(mSaveImageButton, &QPushButton::clicked, this, &Visualizer::onSaveImageButtonClicked);
+    connect(mResetButton, &QPushButton::clicked, this, &Visualizer::onResetButtonClicked);
    
     setWindowTitle(QCoreApplication::translate("Visualiser", "JewelCraft - Customize Your Sparkle", nullptr));
-
-
 }
 
 // method trigger upon selecting "Droplet" radio button (displays its list of curves)
 void Graphics::Visualizer::onDropletShapeButtonClicked()
 {
+    // hide widget visibility
+    mCustomLabelPoints->setVisible(false);
+    mPointsList->setVisible(false); 
+    mXCoordinateLabel->setVisible(false);
+    mYCoordinateLabel->setVisible(false);
+    mZCoordinateLabel->setVisible(false);
+    mXCoordinate->setVisible(false);
+    mYCoordinate->setVisible(false);
+    mZCoordinate->setVisible(false);
+    mAddButton->setVisible(false);
+    mModifyButton->setVisible(false);
+
     // set current shape to "Droplet"
     mCurrentShape = "Droplet";
 
@@ -169,15 +185,31 @@ void Graphics::Visualizer::onDropletShapeButtonClicked()
     // set visibility = true for curves list and label
     mCustomLabelCurves->setVisible(true);
     mCurvesList->setVisible(true);
-    mSaveButton->setVisible(true);
+    mSaveImageButton->setVisible(true);
+
+    mDroplet.generateOffsetAndConnectingVertices();
+
     // set render attributes and updates renderer
-    mRenderer->setRenderAttributes(points, colors, mDroplet.controlPoints());
+    mRenderer->setRenderAttributes(points, colors, mDroplet.controlPoints(), mDroplet.offsetVertices(), 
+        mDroplet.connectingVertices(), mDroplet.normalVertices());
     mRenderer->update();
 }
 
 // method trigger upon selecting "Heart" radio button (displays its list of curves)
 void Graphics::Visualizer::onHeartShapeButtonClicked()
 {   
+    // hide widget visibility
+    mCustomLabelPoints->setVisible(false);
+    mPointsList->setVisible(false);
+    mXCoordinateLabel->setVisible(false);
+    mYCoordinateLabel->setVisible(false);
+    mZCoordinateLabel->setVisible(false);
+    mXCoordinate->setVisible(false);
+    mYCoordinate->setVisible(false);
+    mZCoordinate->setVisible(false);
+    mAddButton->setVisible(false);
+    mModifyButton->setVisible(false);
+
     // set current shape to "Heart"
     mCurrentShape = "Heart";
 
@@ -192,16 +224,22 @@ void Graphics::Visualizer::onHeartShapeButtonClicked()
     // set visibility = true for curves list and label
     mCustomLabelCurves->setVisible(true);
     mCurvesList->setVisible(true);
-    mSaveButton->setVisible(true);
+    mSaveImageButton->setVisible(true);
+
+    mHeart.generateOffsetAndConnectingVertices();
 
     // set render attributes and updates renderer
-    mRenderer->setRenderAttributes(points, colors, mHeart.controlPoints());
+    mRenderer->setRenderAttributes(points, colors, mHeart.controlPoints(), mHeart.offsetVertices(), 
+        mHeart.connectingVertices(), mHeart.normalVertices());
+
     mRenderer->update();
 }
 
 // method triggered upon selecting a curve from curves list (displays its list of points)
-void Graphics::Visualizer::handleCurveItemSelection()
+void Graphics::Visualizer::handleCurveItemSelection(const QModelIndex& index)
 {
+    mSelectedCurveIndex = index.row();
+
     // get current selected item
     QListWidgetItem* selectedItem = mCurvesList->currentItem();
 
@@ -210,7 +248,7 @@ void Graphics::Visualizer::handleCurveItemSelection()
     {
         mSelectedCurve = (selectedItem->text()).toStdString();
         vector<Geometry::Point3D> curvePoints;
-
+       
         // determine curve selection (based on shape selection) and get its points 
         if (mCurrentShape == "Heart")
         {
@@ -237,8 +275,7 @@ void Graphics::Visualizer::handleCurveItemSelection()
             {
                 curvePoints = mDroplet.rightCurve();
             }
-        }
-        
+        }     
         // clear points list
         mPointsList->clear();
 
@@ -248,33 +285,33 @@ void Graphics::Visualizer::handleCurveItemSelection()
             mPointsList->addItem(QString("(%1, %2, %3)").arg(point.x()).arg(point.y()).arg(point.z()));
         } 
 
+        mRenderer->update();
+
         // show widgets
         mCustomLabelPoints->setVisible(true);
-        mPointsList->setVisible(true);
-        mCustomLabelX->setVisible(true);
-        mCustomLabelY->setVisible(true);
-        mCustomLabelZ->setVisible(true);
+        mPointsList->setVisible(true); 
+        mXCoordinateLabel->setVisible(true);
+        mYCoordinateLabel->setVisible(true);
+        mZCoordinateLabel->setVisible(true);
         mXCoordinate->setVisible(true);
         mYCoordinate->setVisible(true);
         mZCoordinate->setVisible(true);
         mAddButton->setVisible(true);
         mModifyButton->setVisible(true);  
-        mFinishButton->setVisible(true);
     }
     else
     {      
         // hide widgets
         mCustomLabelPoints->setVisible(false);
-        mPointsList->setVisible(false);
-        mCustomLabelX->setVisible(false);
-        mCustomLabelY->setVisible(false);
-        mCustomLabelZ->setVisible(false);
+        mPointsList->setVisible(false);      
+        mXCoordinateLabel->setVisible(false);
+        mYCoordinateLabel->setVisible(false);
+        mZCoordinateLabel->setVisible(false);
         mXCoordinate->setVisible(false);
         mYCoordinate->setVisible(false);
         mZCoordinate->setVisible(false);
         mAddButton->setVisible(false);
-        mModifyButton->setVisible(false);    
-        mFinishButton->setVisible(false);
+        mModifyButton->setVisible(false);
     }
 }
 
@@ -309,40 +346,43 @@ void Graphics::Visualizer::loadCoordinatesToSpinBox()
 // method triggered upon clicing "Add" button (adds a new point to the selected curve)
 void Graphics::Visualizer::onAddControlPointButtonClicked()
 {
-    // get text values from the spin boxes for the X, Y, and Z coordinates and assign as QString
-    QString xValue = mXCoordinate->text();
-    QString yValue = mYCoordinate->text();
-    QString zValue = mZCoordinate->text();
+    // get values from the spin boxes for the X, Y, and Z coordinates
+    double xValue = mXCoordinate->value();
+    double yValue = mYCoordinate->value();
+    double zValue = mZCoordinate->value();
 
-    // check if the coordinate values are not empty
-    if (!xValue.isEmpty() && !yValue.isEmpty() && !zValue.isEmpty())
-    {
-        // convert QString to double value
-        double x = xValue.toDouble();
-        double y = yValue.toDouble();
-        double z = zValue.toDouble();
-
-        // add input values as a control point to "mHeart" object
-        if (mCurrentShape == "Heart")
-        {
-            mHeart.addControlPoint(Point3D(x, y, z), mSelectedCurve);
-        }
-        // add input values as a control point to "mDroplet" object
-        else if (mCurrentShape == "Droplet")
-        {
-            mDroplet.addControlPoint(Point3D(x, y, z), mSelectedCurve);
-        }
-
-        // create new list item with point coordinates and add to points list
-        QString newItem = QString("(%1, %2, %3)").arg(xValue, yValue, zValue);
-        QListWidgetItem* item = new QListWidgetItem(newItem);
-        mPointsList->addItem(item);
-
-        // clear input fields
-        mXCoordinate->clear();
-        mYCoordinate->clear();
-        mZCoordinate->clear();
+    // add input values as a control point to "mHeart" object
+    if (mCurrentShape == "Heart")
+    {          
+        mHeart.addControlPoint(Point3D(xValue, yValue, zValue), static_cast<HeartCurveIndex>(mSelectedCurveIndex));
+        mHeart.updateControlPoints();
+        mHeart.compute();
+        mHeart.generateOffsetAndConnectingVertices();
+        mRenderer->setRenderAttributes(mHeart.curvePoints(), mHeart.curveColor(), mHeart.controlPoints(),
+                mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());           
     }
+    // add input values as a control point to "mDroplet" object
+    else if (mCurrentShape == "Droplet")
+    {
+        mDroplet.addControlPoint(Point3D(xValue, yValue, zValue), static_cast<DropletCurveIndex>(mSelectedCurveIndex));
+        mDroplet.updateControlPoints();
+        mDroplet.compute();
+        mDroplet.generateOffsetAndConnectingVertices();
+        mRenderer->setRenderAttributes(mDroplet.curvePoints(), mDroplet.curveColor(), mDroplet.controlPoints(),
+            mDroplet.offsetVertices(), mDroplet.connectingVertices(), mHeart.normalVertices());
+    }
+    mRenderer->update();
+    mResetButton->setVisible(true);
+
+    // create new list item with point coordinates and add to points list
+    QString newItem = QString("(%1, %2, %3)").arg(xValue, yValue, zValue);
+    QListWidgetItem* item = new QListWidgetItem(newItem);
+    mPointsList->addItem(item);
+
+    // clear input fields
+    mXCoordinate->clear();
+    mYCoordinate->clear();
+    mZCoordinate->clear();           
 }
 
 // method triggered upon clicing "Modify" button (modifies the selected point)
@@ -366,28 +406,26 @@ void Graphics::Visualizer::onModifyControlPointButtonClicked()
         // upon selection, update text with the modified point
         if (selectedItem)
         {
-            selectedItem->setText(modifiedItem);
-            double x = mXCoordinate->value();
-            double y = mYCoordinate->value();
-            double z = mZCoordinate->value();
-
-          /*QString xValue = mXCoordinate->text();
-            QString yValue = mYCoordinate->text();
-            QString zValue = mZCoordinate->text();
-
-            double x = xValue.toDouble();
-            double y = yValue.toDouble();
-            double z = zValue.toDouble();*/
+            selectedItem->setText(modifiedItem);               
 
             // modify control point (Heart or Droplet)
             if (mCurrentShape == "Heart")
             {
-                mHeart.modifyControlPoint(Point3D(x, y, z), mSelectedCurve, mSelectedPointIndex);
+                mHeart.modifyControlPoint(Point3D(xValue, yValue, zValue), static_cast<HeartCurveIndex>(mSelectedCurveIndex), mSelectedPointIndex);
+                mHeart.updateControlPoints();
+                mHeart.generateOffsetAndConnectingVertices();
+                mRenderer->setRenderAttributes(mHeart.curvePoints(), mHeart.curveColor(), mHeart.controlPoints(),
+                    mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());                               
             }
             else if (mCurrentShape == "Droplet")
             {
-                mDroplet.modifyControlPoint(Point3D(x, y, z), mSelectedCurve, mSelectedPointIndex);
+                mDroplet.modifyControlPoint(Point3D(xValue, yValue, zValue), static_cast<DropletCurveIndex>(mSelectedCurveIndex), mSelectedPointIndex);
+                mDroplet.updateControlPoints();
+                mDroplet.generateOffsetAndConnectingVertices();
+                mRenderer->setRenderAttributes(mDroplet.curvePoints(), mDroplet.curveColor(), mDroplet.controlPoints(),
+                    mDroplet.offsetVertices(), mDroplet.connectingVertices(), mHeart.normalVertices());
             }
+            mRenderer->update();
 
             // reset spin box to 0
             mXCoordinate->setValue(0);
@@ -397,59 +435,52 @@ void Graphics::Visualizer::onModifyControlPointButtonClicked()
             // disable the "Modify" button and enable the "Add" button after modification
             mModifyButton->setDisabled(true); // Disable modifyButton after modifying the item
             mAddButton->setEnabled(true);
-        }
+        }        
     }
-
+    mResetButton->setVisible(true);
 }
-
-// method triggered upon clicing "Finish" button 
-void Graphics::Visualizer::onFinishCustomizationButtonClicked()
-{    
-    // hide widgets
-    mAddButton->setVisible(false);
-    mModifyButton->setVisible(false);
-    mPointsList->setVisible(false);
-    mXCoordinate->setVisible(false);
-    mYCoordinate->setVisible(false);
-    mZCoordinate->setVisible(false);
-    mCustomLabelX->setVisible(false);
-    mCustomLabelY->setVisible(false);
-    mCustomLabelZ->setVisible(false);
-    mCustomLabelPoints->setVisible(false);
-    mFinishButton->setVisible(false);
-
-    // update control points and renderer attributes for "Heart" shape
-    if (mCurrentShape == "Heart")
-    {
-        mHeart.updateControlPoints();
-        mRenderer->setRenderAttributes(mHeart.curvePoints(), mHeart.curveColor(), mHeart.controlPoints());
-        mRenderer->update();
-    }
-    // update control points and renderer attributes for "Droplet" shape
-    else if (mCurrentShape == "Droplet")
-    {
-        mDroplet.updateControlPoints();
-        mRenderer->setRenderAttributes(mDroplet.curvePoints(), mDroplet.curveColor(), mDroplet.controlPoints());
-        mRenderer->update();
-    }
-}
-
 
 // saves shape in .png file format 
-void  Graphics::Visualizer::onSaveContentButtonClicked() {
-
+void  Graphics::Visualizer::onSaveImageButtonClicked() 
+{
     QString defaultFilePath = "\\savefile";
     QString filePath = QFileDialog::getSaveFileName(this, "Save File", defaultFilePath, "PNG Files (*.png)");
 
-    if (!filePath.isEmpty()) {
+    if (!filePath.isEmpty()) 
+    {
         QPixmap pixmap(mRenderer->size());
         mRenderer->render(&pixmap);
 
-        if (pixmap.save(filePath, "PNG")) {
+        if (pixmap.save(filePath, "PNG")) 
+        {
             QMessageBox::information(this, "Success", "File saved successfully.");
         }
-        else {
+        else 
+        {
             QMessageBox::critical(this, "Error", "Unable to save file!");
         }
+    }
+}
+
+// resets to original shape 
+void  Graphics::Visualizer::onResetButtonClicked()
+{
+    if (mCurrentShape == "Heart")
+    {
+        mHeart = Geometry::Heart3D();     
+
+        mHeart.generateOffsetAndConnectingVertices();
+        mRenderer->setRenderAttributes(mHeart.curvePoints(), mHeart.curveColor(), mHeart.controlPoints(), 
+            mHeart.offsetVertices(), mHeart.connectingVertices(), mDroplet.normalVertices());
+
+        mRenderer->update();
+
+    }    
+    else if (mCurrentShape == "Droplet")
+    {
+        mDroplet = Geometry::Droplet3D();
+        mRenderer->setRenderAttributes(mDroplet.curvePoints(), mDroplet.curveColor(), mDroplet.controlPoints(),
+            mDroplet.offsetVertices(), mDroplet.connectingVertices(), mHeart.normalVertices());
+        mRenderer->update();
     }
 }

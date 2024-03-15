@@ -6,8 +6,6 @@ namespace Geometry
 	{
 	public:
 		Shapes3D();
-		virtual ~Shapes3D();
-
-		virtual void draw() {};
+		~Shapes3D();
 	};
 }

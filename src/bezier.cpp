@@ -6,10 +6,17 @@
 
 using namespace std;
 
-BezierCurveMath::Bezier::Bezier() {}
-BezierCurveMath::Bezier::~Bezier() {}
+BezierCurveMath::Bezier::Bezier() 
+{
 
-Geometry::Point3D BezierCurveMath::Bezier::calculateBezierPoint(vector<Geometry::Point3D>& controlPoints, double t)
+}
+
+BezierCurveMath::Bezier::~Bezier() 
+{
+
+}
+
+Geometry::Point3D BezierCurveMath::Bezier::calculateBezierPoint(vector<Geometry::Point3D>& controlPoints, double inT)
 {
 	int n = controlPoints.size() - 1;
 	double x = 0.0, y = 0.0, z = 0.0;
@@ -22,7 +29,7 @@ Geometry::Point3D BezierCurveMath::Bezier::calculateBezierPoint(vector<Geometry:
 			binomialCoefficient *= (n - j) / (j + 1.0);
 		}
 
-		double term = binomialCoefficient * pow(1 - t, n - i) * pow(t, i);
+		double term = binomialCoefficient * pow(1 - inT, n - i) * pow(inT, i);
 		x += controlPoints[i].x() * term;
 		y += controlPoints[i].y() * term;
 		z += controlPoints[i].z() * term;
