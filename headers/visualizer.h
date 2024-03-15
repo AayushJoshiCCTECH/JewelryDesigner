@@ -3,6 +3,7 @@
 
 #include "heart3D.h"
 #include "droplet3D.h"
+#include "bezier.h"
 
 class OpenGLWindow;
 
@@ -64,8 +65,12 @@ namespace Graphics
 		QPushButton* mResetButton;
 		QPushButton* mSaveImageButton;
 
+		vector<Geometry::Point3D> mSelectedCurveGeneratedPoints;
+		vector<double> mSelectedCurveColors;
+
 		Geometry::Heart3D mHeart;
 		Geometry::Droplet3D mDroplet;
+		BezierCurveMath::Bezier mBezier;
 	};
 }
 

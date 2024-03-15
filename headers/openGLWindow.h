@@ -24,6 +24,8 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
             const vector<Point3D>& inControlVertices, const vector<double>& inOffsetVertices,
             const vector<double>& inConnectingVertices, const vector<double>& inNormalVertices);
 
+        void setRenderAttributes(const vector<Geometry::Point3D>& inSelectedCurveGeneratedPoints, const vector<double>& inSelctedCurveColors);
+
     protected:
         void paintGL() override;
         void initializeGL() override;
@@ -51,6 +53,9 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
         vector<double> mOffsetVertices;
         vector<double> mConnectingVertices;
         vector<double> mNormalVertices;
+
+        vector<double> mSelectedCurveGeneratedPoints;
+        vector<double> mSelectedCurveColors;
 
         QList<QVector3D> mNormals;
         QOpenGLBuffer mVbo;
