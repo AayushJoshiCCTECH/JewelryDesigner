@@ -45,6 +45,8 @@ void OpenGLWindow::setRenderAttributes(const vector<Point3D>& inVertices, const 
 	mOffsetVertices.clear();
 	mConnectingVertices.clear();
 	mNormalVertices.clear();
+	mSelectedCurveGeneratedPoints.clear();
+	mSelectedCurveColors.clear();
 
 	for (size_t i = 0; i < inControlVertices.size(); i++)
 	{
