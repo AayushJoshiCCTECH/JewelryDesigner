@@ -31,11 +31,6 @@ Geometry::Heart3D::Heart3D()
     mTopRightCurve.push_back(Geometry::Point3D(2.0, 6.0, 0.0));
     mTopRightCurve.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
 
-   /* mTopRightCurve.push_back(Geometry::Point3D(0.0, 4.0, 0.0));
-    mTopRightCurve.push_back(Geometry::Point3D(-2.0, 6.0, 0.0));
-    mTopRightCurve.push_back(Geometry::Point3D(-4.0, 4.0, 0.0));
-    mTopRightCurve.push_back(Geometry::Point3D(0.0, 0.0, 0.0));*/
-
     mControlPoints.clear();
     mControlPoints.insert(mControlPoints.end(), mTopLeftCurve.begin(), mTopLeftCurve.end());
     mControlPoints.insert(mControlPoints.end(), mBottomCurve.begin(), mBottomCurve.end());
@@ -107,7 +102,8 @@ const vector<double> Geometry::Heart3D::normalVertices() const
 void Geometry::Heart3D::compute()
 {
     BezierCurveMath::Bezier bezier;
-    bezier.calculateCurvePoints(mControlPoints, mGeneratedPoints);    
+    bezier.calculateCurvePoints(mControlPoints, mGeneratedPoints);
+    generateNormalVertices();
 }
 
 // adds a new control point

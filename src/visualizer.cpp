@@ -89,7 +89,6 @@ void Graphics::Visualizer::setupUi()
     mXCoordinate = new QSpinBox();
     mXCoordinate->setRange(-50, 50);
     mGridLayout->addWidget(mXCoordinate, 21, 8, 1, 1);
-    //mXCoordinate->setPrefix("X: ");
 
     // "Y" coordinate label
     mYCoordinateLabel = new QLabel("Y: ");
@@ -101,7 +100,6 @@ void Graphics::Visualizer::setupUi()
     mYCoordinate = new QSpinBox();
     mYCoordinate->setRange(-50, 50);
     mGridLayout->addWidget(mYCoordinate, 23, 8, 1, 1);
-    //mYCoordinate->setPrefix("Y: ");
 
     // "Z" coordinate label
     mZCoordinateLabel = new QLabel("Z: ");
@@ -113,7 +111,6 @@ void Graphics::Visualizer::setupUi()
     mZCoordinate = new QSpinBox();
     mZCoordinate->setRange(-50, 50);
     mGridLayout->addWidget(mZCoordinate, 25, 8, 1, 1);
-    //mZCoordinate->setPrefix("Z: ");
 
     // add button
     mAddButton = new QPushButton("Add", this);
