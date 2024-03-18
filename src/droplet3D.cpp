@@ -85,7 +85,8 @@ const vector<double> Geometry::Droplet3D::normalVertices() const
 void Geometry::Droplet3D::compute()
 {
     BezierCurveMath::Bezier bezier;
-    bezier.calculateCurvePoints(mControlPoints, mGeneratedPoints);
+    bezier.calculateCurvePoints(mControlPoints, mGeneratedPoints);   
+    generateNormalVertices();
 }
 
 // adds a new control point

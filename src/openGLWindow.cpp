@@ -105,18 +105,19 @@ void OpenGLWindow::initializeGL()
 		"   gl_Position = projMatrix * viewMatrix * modelMatrix * posAttr;\n"
 		"}\n";
 
-	static const char* fragmentShaderSource =		
+	static const char* fragmentShaderSource =
 		"varying lowp vec4 col;\n"
 		"varying highp vec3 vert;\n"
 		"varying highp vec3 vertNormal;\n"
 		"uniform highp vec3 lightPos;\n"
 		"void main() {\n"
-		"   highp vec3 L = normalize(lightPos - vert);\n"
+		"  highp vec3 L = normalize(lightPos - vert);\n"
 		"   highp float NL = max(dot(normalize(vertNormal), L), 0.0);\n"
 		"   highp vec3 color = vec3(col);\n"
 		"   highp vec3 col1 = clamp(color * 0.2 + color * 0.8 * NL, 0.0, 1.0);\n"
 		"   gl_FragColor = vec4(col1, 1.0);\n"
 		"}\n";
+		
 		
 
 	rotationAngle = QQuaternion::fromAxisAndAngle(180.0f, 0.0f, 1.0f, 0.0f);
@@ -194,33 +195,33 @@ void OpenGLWindow::paintGL()
 	// draw original shape curve
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
-	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mNormalVertices.data());
 	glDrawArrays(GL_LINE_LOOP, 0, mVertices.size() / 3);
 
 	// draw control points
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mControlVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
-	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mNormalVertices.data());
 	glDrawArrays(GL_POINTS, 0, mControlVertices.size() / 3);
 	glDisable(GL_PROGRAM_POINT_SIZE);
 
 	// highlight selected curve
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mSelectedCurveGeneratedPoints.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mSelectedCurveColors.data());
-	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mNormalVertices.data());
 	glDrawArrays(GL_LINES, 0, mSelectedCurveGeneratedPoints.size() / 3);
 	
 	// draw the extruded shape curve
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mOffsetVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
-	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mNormalVertices.data());
 	glDrawArrays(GL_LINE_LOOP, 0, mOffsetVertices.size() / 3);
 	
 	// draw connecting triangles between original and offset curves
 	glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mConnectingVertices.data());
 	glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mColors.data());
-	glVertexAttribPointer(m_normAttr, 3, GL_FLOAT, GL_FALSE, 0, mNormalVertices.data());
+	glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mNormalVertices.data());
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, mConnectingVertices.size() / 3);
 
 	// Disable vertex attributes
